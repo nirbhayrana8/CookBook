@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FF006F</color>
+    <color name="colorPrimaryDark">#E6E14086</color>
+    <color name="colorAccent">#02A9EA</color>
+    <color name="colorToolbar">#FF006F</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="active_tab_color">#DBF9F0</color>
+    <color name="inactive_active_tab_color">#210124</color>
+</resources>
