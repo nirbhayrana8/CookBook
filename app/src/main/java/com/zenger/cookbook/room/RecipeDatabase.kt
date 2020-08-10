@@ -9,7 +9,7 @@ import com.zenger.cookbook.room.dao.SavedDao
 import com.zenger.cookbook.room.tables.RecipeTable
 import com.zenger.cookbook.room.tables.SavedRecipeTable
 
-@Database(entities = [RecipeTable::class, SavedRecipeTable::class], version = 1, exportSchema = false)
+@Database(entities = [RecipeTable::class, SavedRecipeTable::class], version = 2, exportSchema = false)
 abstract class RecipeDatabase: RoomDatabase() {
 
     abstract fun recipeDao(): RecipeDao
