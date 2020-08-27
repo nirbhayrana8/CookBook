@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
@@ -37,7 +38,7 @@ class LoginFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
-
+        binding.fragment = this
         return binding.root
     }
 
@@ -54,9 +55,31 @@ class LoginFragment : Fragment() {
 
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+
             try {
                 val account = task.getResult(ApiException::class.java)
                 viewModel.firebaseAuthWithGoogle(account?.idToken!!)
+
+                viewModel.authenticatedUserData.observe(viewLifecycleOwner, Observer { user ->
+
+                    if (user.isNew) {
+                        Timber.d("New User")
+                        viewModel.createNewUser(user)
+                        viewModel.createdUserLiveData.observe(viewLifecycleOwner, Observer {
+
+                            if (it.isCreated) {
+                                val view = requireActivity().findViewById<View>(R.id.container)
+                                val snackBar = Snackbar.make(view, "User Created", Snackbar.LENGTH_LONG)
+                                snackBar.show()
+                            }
+                            // Navigate to Main App
+                        })
+                    } else {
+                        Timber.d("Old User")
+                        // Navigate to Main App
+                    }
+                })
+
             } catch (e: Exception) {
                 Timber.d("Google Sign In Failed")
 
@@ -70,5 +93,10 @@ class LoginFragment : Fragment() {
             }
 
         }
+    }
+
+    fun onClick() {
+        Timber.d("CLICKERRRR")
+        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToAltLoginFragment())
     }
 }

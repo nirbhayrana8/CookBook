@@ -9,5 +9,14 @@
         android:id="@+id/loginFragment"
         android:name="com.zenger.cookbook.ui.fragments.LoginFragment"
         android:label="LoginFragment"
-        tools:layout="@layout/fragment_login"/>
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_altLoginFragment"
+            app:destination="@id/altLoginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/altLoginFragment"
+        android:name="com.zenger.cookbook.ui.fragments.AltLoginFragment"
+        android:label="AltLoginFragment"
+        tools:layout="@layout/fragment_alt_login"/>
 </navigation>
