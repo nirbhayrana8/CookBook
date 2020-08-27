@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.zenger.cookbook.viewmodels.LoginViewModel" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/container"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/main_gradient"
+        android:paddingLeft="@dimen/fragment_horizontal_margin"
+        android:paddingTop="@dimen/fragment_vertical_margin"
+        android:paddingRight="@dimen/fragment_horizontal_margin"
+        android:paddingBottom="@dimen/fragment_vertical_margin"
+        android:tag="layout/fragment_login_0">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/app_name"
+            android:textColor="@color/colorOnPrimary"
+            android:textSize="50.0sp"
+            app:layout_constraintBottom_toTopOf="@id/login_google"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/login_google"
+            style="@style/ButtonStyle_blank"
+            android:layout_width="326dp"
+            android:layout_height="51dp"
+            android:layout_gravity="start"
+            android:layout_marginStart="48dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="48dp"
+            android:layout_marginBottom="64dp"
+            android:background="@drawable/rounded_button_blank"
+            android:elevation="@dimen/standard_elevation"
+            android:text="@string/action_sign_in_with_google"
+            app:icon="@drawable/google_logo"
+            android:onClick="@{() -> viewModel.signInWithGoogle()}"
+            app:iconSize="24dp"
+            app:iconTint="@null"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0.2" />
+
+        <Button
+            android:id="@+id/other_login"
+            style="@style/TextButtonStyle"
+            android:layout_width="326dp"
+            android:layout_height="51dp"
+            android:layout_marginTop="16.0dip"
+            android:text="@string/action_sign_in_other"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/login_google" />
+
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="13.0dip"
+            android:layout_height="42.0dip"
+            android:layout_gravity="center"
+            android:layout_marginStart="32.0dip"
+            android:layout_marginEnd="32.0dip"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.37" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

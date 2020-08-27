@@ -1,10 +1,9 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme" parent="@style/Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="BottomNavStyle" parent="Theme.AppCompat.Light.NoActionBar">
@@ -18,5 +17,15 @@
         <item name="fontFamily">@font/montserrat</item>
     </style>
 
+    <style name="ButtonStyle_blank" parent="@style/Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/colorOnPrimaryDark</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+        <item name="backgroundTint">@color/colorOnPrimary</item>
+    </style>
+
+    <style name="TextButtonStyle" parent="@style/Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/colorOnPrimary</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+    </style>
 
 </resources>

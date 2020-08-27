@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_flow_nav"
+    app:startDestination="@id/discoverFragment">
+    <fragment
+        android:id="@+id/discoverFragment"
+        android:name="com.zenger.cookbook.ui.fragments.DiscoverFragment"
+        tools:layout="@layout/fragment_discover"
+        android:label="DiscoverFragment">
+        <action
+            android:id="@+id/action_discoverFragment_to_recipeFragment"
+            app:destination="@id/recipeFragment" />
+        <action
+            android:id="@+id/action_discoverFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/recipeFragment"
+        android:name="com.zenger.cookbook.ui.fragments.RecipeFragment"
+        tools:layout="@layout/fragment_recipe"
+        android:label="fragment_recipe">
+        <action
+            android:id="@+id/action_recipeFragment_to_discoverFragment"
+            app:destination="@id/discoverFragment" />
+        <action
+            android:id="@+id/action_recipeFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.zenger.cookbook.ui.fragments.DetailFragment"
+        tools:layout="@layout/fragment_detail"
+        android:label="DetailFragment">
+        <argument
+            android:name="sourceUrl"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+</navigation>

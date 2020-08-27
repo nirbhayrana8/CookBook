@@ -1,10 +1,12 @@
 package com.zenger.cookbook.room.dao
 
 import androidx.lifecycle.LiveData
+import androidx.room.Dao
 import androidx.room.Query
 import com.zenger.cookbook.room.tables.RecipeTable
 import com.zenger.cookbook.room.tables.SavedRecipeTable
 
+@Dao
 interface SavedDao: BaseDao<SavedRecipeTable> {
 
     @JvmSuppressWildcards

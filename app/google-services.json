@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "897782935893",
+    "firebase_url": "https://cookbook-46230.firebaseio.com",
+    "project_id": "cookbook-46230",
+    "storage_bucket": "cookbook-46230.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:897782935893:android:52473cf96b0ea5d601bfdc",
+        "android_client_info": {
+          "package_name": "com.zenger.cookbook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "897782935893-11ini8bjmnb3fqml333j443mtc1ur6ta.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKTMxnzmzk1hrUAD8RXGYWf-RcvXaNHqo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "897782935893-11ini8bjmnb3fqml333j443mtc1ur6ta.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
