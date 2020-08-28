@@ -6,7 +6,7 @@ import androidx.databinding.DataBindingUtil
 import com.zenger.cookbook.R
 import com.zenger.cookbook.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(){
 
     private lateinit var binding: ActivityMainBinding
 

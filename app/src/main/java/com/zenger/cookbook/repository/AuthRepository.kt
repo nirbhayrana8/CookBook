@@ -6,11 +6,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import timber.log.Timber
+import java.lang.NullPointerException
 
 class AuthRepository {
 
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val database = Firebase.firestore
+
+    private val user by lazy { User() }
 
     fun firebaseSignInWithGoogle(authCredentials: AuthCredential): MutableLiveData<User> {
         val authenticatedUserMutableLiveData = MutableLiveData<User>()
@@ -66,5 +69,63 @@ class AuthRepository {
         }
 
         return newUserMutableLiveData
+    }
+
+    fun checkIfUserIsAuthenticatedInFirebase(): MutableLiveData<User> {
+        val isUserAuthenticateInFirebase = MutableLiveData<User>()
+        val firebaseUser = firebaseAuth.currentUser
+
+        if (firebaseUser == null) {
+            user.isAuthenticated = false
+            isUserAuthenticateInFirebase.value = user
+        } else {
+            user.uid = firebaseUser.uid
+            user.isAuthenticated = true
+            isUserAuthenticateInFirebase.value = user
+        }
+        return isUserAuthenticateInFirebase
+    }
+
+    fun addUser(uid: String): MutableLiveData<User> {
+        val userLiveData = MutableLiveData<User>()
+        val uidRef = database.collection("users").document(uid)
+
+        uidRef.get().addOnSuccessListener {
+            if (it.exists()) {
+                val user = it.toObject(User::class.java)
+                userLiveData.value = user
+            } else {
+                Timber.d("User Not found")
+                throw NullPointerException("User not found in backend")
+            }
+        }
+
+        return userLiveData
+    }
+
+    fun firebaseSignInWithFacebook(authCredentials: AuthCredential): MutableLiveData<User> {
+        val authenticatedUserMutableLiveData = MutableLiveData<User>()
+        firebaseAuth.signInWithCredential(authCredentials)
+            .addOnCompleteListener { authTask ->
+                if (authTask.isSuccessful) {
+                    val isNewUser = authTask.result?.additionalUserInfo?.isNewUser!!
+                    val firebaseUser = firebaseAuth.currentUser
+
+                    if (firebaseUser != null) {
+                        val uid = firebaseUser.uid
+                        val name = firebaseUser.displayName!!
+                        val email = firebaseUser.email
+
+                        Timber.d("Name: $name, Email: $email, UID: $uid")
+                        val user = User(uid, name, email ?: "")
+                        user.isNew = isNewUser
+
+                        authenticatedUserMutableLiveData.value = user
+                }
+            } else {
+                    Timber.d("Error: ${authTask.exception?.message}")
+                }
+            }
+        return authenticatedUserMutableLiveData
     }
 }

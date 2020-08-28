@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
@@ -15,11 +16,13 @@ import com.zenger.cookbook.R
 import com.zenger.cookbook.adapters.RecyclerViewAdapter
 import com.zenger.cookbook.databinding.FragmentDiscoverBinding
 import com.zenger.cookbook.viewmodels.DiscoverViewModel
+import com.zenger.cookbook.viewmodels.factories.DiscoverViewModelFactory
 
 
 class DiscoverFragment : Fragment(), RecyclerViewAdapter.Interaction {
 
-    private val viewModel: DiscoverViewModel by navGraphViewModels(R.id.navigation)
+    private val factory by lazy { DiscoverViewModelFactory(requireActivity().application) }
+    private val viewModel: DiscoverViewModel by viewModels { factory }
     private lateinit var binding: FragmentDiscoverBinding
     private val adapter = RecyclerViewAdapter(this)
 

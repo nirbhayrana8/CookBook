@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.zenger.cookbook.R
 import com.zenger.cookbook.databinding.FragmentDetailBinding
 import com.zenger.cookbook.viewmodels.DetailViewModel
-import com.zenger.cookbook.viewmodels.DetailViewModelFactory
+import com.zenger.cookbook.viewmodels.factories.DetailViewModelFactory
 
 class DetailFragment : Fragment() {
 

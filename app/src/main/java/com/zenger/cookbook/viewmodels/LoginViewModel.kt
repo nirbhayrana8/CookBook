@@ -5,9 +5,16 @@ import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.GoogleAuthProvider
 import com.zenger.cookbook.R
 import com.zenger.cookbook.repository.AuthRepository
@@ -17,6 +24,14 @@ class LoginViewModel(application: Application) : ViewModel() {
 
     private val authRepository by lazy { AuthRepository() }
 
+    lateinit var authenticatedUserData: LiveData<User>
+    lateinit var createdUserLiveData: LiveData<User>
+
+    private val _signInIntent = MutableLiveData<Intent>()
+    val signInIntent: MutableLiveData<Intent> = _signInIntent
+
+
+    // Google sign in components
     private var gso: GoogleSignInOptions =
         GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(application.getString(R.string.default_web_client_id))
@@ -24,14 +39,9 @@ class LoginViewModel(application: Application) : ViewModel() {
             .build()
     private var mGoogleSignInClient: GoogleSignInClient
 
-    private val _signInIntent = MutableLiveData<Intent>()
-    val signInIntent: MutableLiveData<Intent> = _signInIntent
-
-    lateinit var authenticatedUserData: LiveData<User>
-    lateinit var createdUserLiveData: LiveData<User>
-
     init {
         mGoogleSignInClient = GoogleSignIn.getClient(application, gso)
+
     }
 
     fun signInWithGoogle() {
@@ -46,6 +56,11 @@ class LoginViewModel(application: Application) : ViewModel() {
 
     fun createNewUser(authenticatedUser: User) {
         createdUserLiveData = authRepository.createUserInFireStoreIfNotExists(authenticatedUser)
+    }
+
+    fun handleFacebookAccessToken(accessToken: AccessToken) {
+        val credentials = FacebookAuthProvider.getCredential(accessToken.token)
+        authenticatedUserData = authRepository.firebaseSignInWithFacebook(credentials)
     }
 
 }

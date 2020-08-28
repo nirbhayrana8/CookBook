@@ -1,7 +1,8 @@
-package com.zenger.cookbook.viewmodels
+package com.zenger.cookbook.viewmodels.factories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.zenger.cookbook.viewmodels.DetailViewModel
 
 class DetailViewModelFactory(private val url: String): ViewModelProvider.Factory {
 

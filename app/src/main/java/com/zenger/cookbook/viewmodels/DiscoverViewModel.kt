@@ -22,7 +22,7 @@ class DiscoverViewModel(application: Application): AndroidViewModel(application)
     init {
 
         CoroutineScope(IO + viewModelJob).launch {
-//             repository.getRandomRecipes()
+             repository.getRandomRecipes()
            recipes()
             Timber.d(" Recipes: ${recipes.value.toString()}")
             }

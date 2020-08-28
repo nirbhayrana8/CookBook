@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,12 +15,14 @@ import com.zenger.cookbook.R
 import com.zenger.cookbook.adapters.RecyclerViewAdapter
 import com.zenger.cookbook.databinding.FragmentRecipeBinding
 import com.zenger.cookbook.viewmodels.MyRecipeViewModel
+import com.zenger.cookbook.viewmodels.factories.MyRecipeViewModelFactory
 
 class RecipeFragment : Fragment(), RecyclerViewAdapter.Interaction {
 
     private lateinit var binding: FragmentRecipeBinding
     private val adapter = RecyclerViewAdapter(this)
-    private val viewModel:MyRecipeViewModel by navGraphViewModels(R.id.navigation)
+    private val factory by lazy { MyRecipeViewModelFactory(requireActivity().application) }
+    private val viewModel:MyRecipeViewModel by viewModels { factory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

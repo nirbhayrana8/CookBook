@@ -1,8 +1,9 @@
-package com.zenger.cookbook.viewmodels
+package com.zenger.cookbook.viewmodels.factories
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.zenger.cookbook.viewmodels.LoginViewModel
 import java.lang.IllegalArgumentException
 
 @Suppress("UNCHECKED_CAST")
