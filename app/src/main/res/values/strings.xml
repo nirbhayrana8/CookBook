@@ -16,6 +16,8 @@
     <string name="action_sign_in_with_google">Sign in with Google</string>
     <string name="action_sign_in_with_facebook">Sign in with Facebook</string>
     <string name="action_sign_in_with_phone">Sign in with Phone Number</string>
+    <string name="continue_">Continue</string>
+    <string name="enter_phone_number">Enter Phone Number</string>
     <string name="welcome">"Welcome!"</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>

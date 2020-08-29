@@ -12,7 +12,9 @@
         tools:layout="@layout/fragment_login_host" >
         <action
             android:id="@+id/action_loginHostFragment_to_appFlowHostFragment"
-            app:destination="@id/appFlowHostFragment" />
+            app:destination="@id/appFlowHostFragment"
+            app:popUpTo="@id/loginHostFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/appFlowHostFragment"

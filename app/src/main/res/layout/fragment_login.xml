@@ -54,13 +54,68 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintVertical_bias="0.2" />
 
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="48dp"
+            android:layout_marginEnd="48dp"
+            android:layout_marginBottom="152dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.545"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/o_login_facebook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/login_facebook"
+                style="@style/ButtonStyle_blank"
+                android:layout_width="326dp"
+                android:layout_height="51dp"
+                android:background="@drawable/rounded_button_blank"
+                android:elevation="@dimen/standard_elevation"
+                android:text="@string/action_sign_in_with_facebook"
+                app:icon="@drawable/facebook_logo"
+                android:onClick="@{() -> fragment.onClickFacebookLogin()}"
+                app:iconSize="24dp"
+                android:alpha="0"
+                android:enabled="false"
+                app:iconTint="@null" />
+        </FrameLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/login_phone"
+            style="@style/ButtonStyle_blank"
+            android:layout_width="326dp"
+            android:layout_height="51dp"
+            android:layout_gravity="start"
+            android:layout_marginStart="48dp"
+            android:layout_marginEnd="48dp"
+            android:layout_marginBottom="64dp"
+            android:alpha="0"
+            android:elevation="@dimen/standard_elevation"
+            android:enabled="false"
+            android:text="@string/action_sign_in_with_phone"
+            app:icon="@drawable/phone_icon"
+            app:iconSize="24dp"
+            app:iconTint="@null"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.454"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <Button
             android:id="@+id/other_login"
             style="@style/TextButtonStyle"
             android:layout_width="326dp"
             android:layout_height="51dp"
             android:layout_marginTop="16.0dip"
-            android:onClick="@{() -> fragment.onClick()}"
+            android:onClick="@{() -> fragment.otherLoginClick()}"
             android:text="@string/action_sign_in_other"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

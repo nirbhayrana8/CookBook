@@ -11,12 +11,13 @@
         android:label="LoginFragment"
         tools:layout="@layout/fragment_login">
         <action
-            android:id="@+id/action_loginFragment_to_altLoginFragment"
-            app:destination="@id/altLoginFragment" />
+            android:id="@+id/action_loginFragment_to_phoneSignInFragment"
+            app:destination="@id/phoneSignInFragment" />
     </fragment>
+
     <fragment
-        android:id="@+id/altLoginFragment"
-        android:name="com.zenger.cookbook.ui.fragments.AltLoginFragment"
-        android:label="AltLoginFragment"
-        tools:layout="@layout/fragment_alt_login"/>
+        android:id="@+id/phoneSignInFragment"
+        android:name="com.zenger.cookbook.ui.fragments.PhoneSignInFragment"
+        android:label="PhoneSignInFragment"
+        tools:layout="@layout/fragment_phone_sign_in"/>
 </navigation>

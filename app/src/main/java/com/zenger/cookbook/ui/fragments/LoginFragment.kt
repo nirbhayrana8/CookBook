@@ -1,5 +1,6 @@
 package com.zenger.cookbook.ui.fragments
 
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -12,6 +13,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
@@ -26,6 +31,7 @@ private const val RC_SIGN_IN = 9687
 class LoginFragment : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding
+    private lateinit var callbackManager: CallbackManager
 
     private val factory by lazy { LoginViewModelFactory(requireActivity().application) }
     private val viewModel: LoginViewModel by viewModels { factory }
@@ -35,16 +41,43 @@ class LoginFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
+        callbackManager = CallbackManager.Factory.create()
+
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
         binding.viewModel = viewModel
-        binding.lifecycleOwner = viewLifecycleOwner
+
+        binding.oLoginFacebook.setPermissions("email", "public_profile")
+        binding.oLoginFacebook.fragment = this
+
         binding.fragment = this
+
+        binding.oLoginFacebook.registerCallback(callbackManager, object :
+            FacebookCallback<LoginResult> {
+
+            override fun onSuccess(result: LoginResult?) {
+                viewModel.handleFacebookAccessToken(result?.accessToken!!)
+                setUpUserAccount()
+            }
+
+            override fun onCancel() {
+                showSnackBarOnError("Facebook")
+            }
+
+            override fun onError(error: FacebookException?) {
+                throw FacebookException("${error?.message}")
+            }
+
+        })
 
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        binding.loginPhone.setOnClickListener {
+            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToPhoneSignInFragment())
+        }
 
         viewModel.signInIntent.observe(viewLifecycleOwner, Observer {
             startActivityForResult(it, RC_SIGN_IN)
@@ -60,45 +93,84 @@ class LoginFragment : Fragment() {
             try {
                 val account = task.getResult(ApiException::class.java)
                 viewModel.firebaseAuthWithGoogle(account?.idToken!!)
-
-                viewModel.authenticatedUserData.observe(viewLifecycleOwner, Observer { user ->
-
-                    if (user.isNew) {
-                        Timber.d("New User")
-                        viewModel.createNewUser(user)
-                        viewModel.createdUserLiveData.observe(viewLifecycleOwner, Observer {
-
-                            if (it.isCreated) {
-                                val view = requireActivity().findViewById<View>(R.id.container)
-                                val snackBar = Snackbar.make(view, "User Created", Snackbar.LENGTH_LONG)
-                                snackBar.show()
-                            }
-                            goToMainAppFlow()
-                        })
-                    } else {
-                        Timber.d("Old User")
-                        goToMainAppFlow()
-                    }
-                })
+                setUpUserAccount()
 
             } catch (e: Exception) {
                 Timber.d("Google Sign In Failed")
-
-                val view = requireActivity().findViewById<View>(R.id.container)
-                val snackBar = Snackbar.make(view, "Google Sign In Failed", Snackbar.LENGTH_LONG)
-                    .setAction("Retry") {
-                        startActivityForResult(viewModel.signInIntent.value, RC_SIGN_IN)
-                    }
-                    .setActionTextColor(Color.RED)
-                snackBar.show()
+                showSnackBarOnError("Google")
             }
 
+        } else {
+            callbackManager.onActivityResult(requestCode, resultCode, data)
         }
     }
 
-    fun onClick() {
-        Timber.d("CLICKERRRR")
-        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToAltLoginFragment())
+    fun onClickFacebookLogin() {
+        binding.oLoginFacebook.performClick()
+    }
+
+    fun otherLoginClick() {
+        ObjectAnimator.ofFloat(binding.loginGoogle,
+            "translationY", -500f).apply {
+
+            duration = 500
+            start()
+        }
+
+        animateButtons(binding.loginFacebook, true)
+        animateButtons(binding.loginPhone, true)
+        animateButtons(binding.otherLogin, false)
+    }
+
+    private fun animateButtons(view: View, boolean: Boolean) {
+
+        view.apply {
+            isEnabled = boolean
+
+            animate()
+                .alpha(if (boolean) 1f else 0f)
+                .duration = 580
+        }
+    }
+
+    private fun setUpUserAccount() {
+        viewModel.authenticatedUserData.observe(viewLifecycleOwner, Observer { user ->
+
+            if (user.isNew) {
+                Timber.d("New User")
+                viewModel.createNewUser(user)
+                viewModel.createdUserLiveData.observe(viewLifecycleOwner, Observer {
+
+                    if (it.isCreated) {
+                        val view = requireActivity().findViewById<View>(R.id.container)
+                        val snackBar = Snackbar.make(view, "User Created", Snackbar.LENGTH_LONG)
+                        snackBar.show()
+                    }
+                    goToMainAppFlow()
+                })
+            } else {
+                Timber.d("Old User")
+                goToMainAppFlow()
+            }
+        })
+    }
+
+    private fun showSnackBarOnError(OAuthProvider: String) {
+
+        val view = requireActivity().findViewById<View>(R.id.container)
+        val snackBar = Snackbar.make(view, "$OAuthProvider Sign In Failed", Snackbar.LENGTH_LONG)
+            .setAction("Retry") {
+
+                if (OAuthProvider == "Google") {
+                    startActivityForResult(viewModel.signInIntent.value, RC_SIGN_IN)
+                } else {
+                    onClickFacebookLogin()
+                }
+
+            }
+            .setActionTextColor(Color.RED)
+        snackBar.show()
+
     }
 
     private fun goToMainAppFlow() {
