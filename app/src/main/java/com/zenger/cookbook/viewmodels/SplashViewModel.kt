@@ -16,6 +16,6 @@ class SplashViewModel: ViewModel() {
     }
 
     fun getUserFromDatabase(uid: String) {
-        userLiveData = repository.addUser(uid)
+        userLiveData = repository.searchUserInBackend(uid)
     }
 }

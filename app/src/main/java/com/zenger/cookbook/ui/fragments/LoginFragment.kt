@@ -20,6 +20,8 @@ import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FacebookAuthProvider
+import com.google.firebase.auth.GoogleAuthProvider
 import com.zenger.cookbook.R
 import com.zenger.cookbook.databinding.FragmentLoginBinding
 import com.zenger.cookbook.viewmodels.LoginViewModel
@@ -38,6 +40,7 @@ class LoginFragment : Fragment() {
 
     private val mainNavController by lazy { activity?.findNavController(R.id.main_nav_host_fragment) }
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
@@ -55,7 +58,8 @@ class LoginFragment : Fragment() {
             FacebookCallback<LoginResult> {
 
             override fun onSuccess(result: LoginResult?) {
-                viewModel.handleFacebookAccessToken(result?.accessToken!!)
+                val credentials = FacebookAuthProvider.getCredential(result?.accessToken!!.token)
+                viewModel.firebaseAuthWithCredentials(credentials)
                 setUpUserAccount()
             }
 
@@ -92,7 +96,8 @@ class LoginFragment : Fragment() {
 
             try {
                 val account = task.getResult(ApiException::class.java)
-                viewModel.firebaseAuthWithGoogle(account?.idToken!!)
+                val authCredentials = GoogleAuthProvider.getCredential(account?.idToken!!, null)
+                viewModel.firebaseAuthWithCredentials(authCredentials)
                 setUpUserAccount()
 
             } catch (e: Exception) {
@@ -117,20 +122,22 @@ class LoginFragment : Fragment() {
             start()
         }
 
-        animateButtons(binding.loginFacebook, true)
+        animateButtons(binding.loginFacebook,true)
         animateButtons(binding.loginPhone, true)
         animateButtons(binding.otherLogin, false)
     }
 
+
     private fun animateButtons(view: View, boolean: Boolean) {
 
-        view.apply {
-            isEnabled = boolean
+            view.apply {
+                isEnabled = boolean
 
-            animate()
-                .alpha(if (boolean) 1f else 0f)
-                .duration = 580
-        }
+                animate()
+                    .alpha(if (boolean) 1f else 0f)
+                    .duration = 580
+            }
+
     }
 
     private fun setUpUserAccount() {
