@@ -1,15 +1,17 @@
 package com.zenger.cookbook.ui.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
 import com.zenger.cookbook.R
 import com.zenger.cookbook.adapters.RecyclerViewAdapter
@@ -29,8 +31,12 @@ class RecipeFragment : Fragment(), RecyclerViewAdapter.Interaction {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_recipe, container, false)
 
-        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        binding.recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         binding.recyclerView.adapter = adapter
+
+        val layout = binding.toolBar
+        val toolbar = layout.findViewById<MaterialToolbar>(R.id.toolBar)
+        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
 
         return binding.root
     }

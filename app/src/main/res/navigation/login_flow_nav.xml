@@ -14,7 +14,8 @@
             android:id="@+id/action_loginFragment_to_phoneSignInFragment"
             app:destination="@id/phoneSignInFragment"
             app:enterAnim="@anim/enter_from_right"
-            app:exitAnim="@anim/exit_to_left" />
+            app:exitAnim="@anim/exit_to_left"
+            app:launchSingleTop="true" />
     </fragment>
 
     <fragment
@@ -26,12 +27,16 @@
             android:id="@+id/action_phoneSignInFragment_to_loginFragment"
             app:destination="@id/loginFragment"
             app:enterAnim="@anim/enter_from_left"
-            app:exitAnim="@anim/exit_to_right" />
+            app:exitAnim="@anim/exit_to_right"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/phoneSignInFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_phoneSignInFragment_to_otpFragment"
             app:destination="@id/otpFragment"
             app:enterAnim="@anim/enter_from_right"
-            app:exitAnim="@anim/exit_to_left" />
+            app:exitAnim="@anim/exit_to_left"
+            app:launchSingleTop="true" />
     </fragment>
     <fragment
         android:id="@+id/otpFragment"
@@ -45,6 +50,9 @@
             android:id="@+id/action_otpFragment_to_phoneSignInFragment"
             app:destination="@id/phoneSignInFragment"
             app:enterAnim="@anim/enter_from_left"
-            app:exitAnim="@anim/exit_to_left" />
+            app:exitAnim="@anim/exit_to_left"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/otpFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

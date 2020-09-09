@@ -83,7 +83,7 @@ class LoginFragment : Fragment() {
             findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToPhoneSignInFragment())
         }
 
-        viewModel.signInIntent.observe(viewLifecycleOwner, Observer {
+        viewModel.signInIntent.observe(viewLifecycleOwner, {
             startActivityForResult(it, RC_SIGN_IN)
         })
     }
@@ -141,7 +141,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun setUpUserAccount() {
-        viewModel.authenticatedUserData.observe(viewLifecycleOwner, Observer { user ->
+        viewModel.authenticatedUserData.observe(viewLifecycleOwner, { user ->
 
             if (user.isNew) {
                 Timber.d("New User")

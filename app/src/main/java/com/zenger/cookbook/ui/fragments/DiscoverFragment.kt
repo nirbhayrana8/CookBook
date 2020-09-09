@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
 import com.zenger.cookbook.R
 import com.zenger.cookbook.adapters.RecyclerViewAdapter
@@ -34,6 +34,10 @@ class DiscoverFragment : Fragment(), RecyclerViewAdapter.Interaction {
         binding.recyclerView.layoutManager = StaggeredGridLayoutManager(2, 1)
         binding.recyclerView.adapter = adapter
 
+        val layout = binding.toolBar
+        val toolbar = layout.findViewById<MaterialToolbar>(R.id.toolBar)
+        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
+
         return binding.root
     }
 
@@ -45,7 +49,7 @@ class DiscoverFragment : Fragment(), RecyclerViewAdapter.Interaction {
             viewModel.listState = null
         }
 
-        viewModel.recipes.observe(viewLifecycleOwner, Observer {
+        viewModel.recipes.observe(viewLifecycleOwner, {
             adapter.submitList(it)
         })
     }
@@ -53,6 +57,8 @@ class DiscoverFragment : Fragment(), RecyclerViewAdapter.Interaction {
     override fun onDestroyView() {
         super.onDestroyView()
         viewModel.listState = binding.recyclerView.layoutManager?.onSaveInstanceState()
+
+        (requireActivity() as AppCompatActivity).supportActionBar?.hide()
     }
 
     override fun onItemSelected(position: Int) {

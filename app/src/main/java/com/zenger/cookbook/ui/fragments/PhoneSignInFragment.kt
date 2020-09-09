@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -72,6 +73,15 @@ class PhoneSignInFragment : Fragment() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        activity?.onBackPressedDispatcher?.addCallback {
+            findNavController()
+                    .navigate(PhoneSignInFragmentDirections.actionPhoneSignInFragmentToLoginFragment())
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
@@ -102,11 +112,13 @@ class PhoneSignInFragment : Fragment() {
 
             binding.loading.visibility = View.VISIBLE
             binding.loginPhone.isEnabled = false
+            binding.phoneEditText.isEnabled = false
             
         } else {
             binding.phoneEditText.error = getString(R.string.invalid_phone_number)
         }
     }
+
 
     private fun verifyPhone() {
 

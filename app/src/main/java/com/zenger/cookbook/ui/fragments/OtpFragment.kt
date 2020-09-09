@@ -8,10 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.PhoneAuthProvider
 import com.zenger.cookbook.R
@@ -24,6 +27,7 @@ import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 
@@ -35,6 +39,17 @@ class OtpFragment : Fragment() {
     private val verificationCode: String by lazy { OtpFragmentArgs.fromBundle(requireArguments()).verificationCode }
     private var validOtp = false
     private val disposables = CompositeDisposable()
+
+    private val mainNavController by lazy { activity?.findNavController(R.id.main_nav_host_fragment) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        activity?.onBackPressedDispatcher?.addCallback {
+            findNavController()
+                    .navigate(OtpFragmentDirections.actionOtpFragmentToPhoneSignInFragment() )
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -60,12 +75,36 @@ class OtpFragment : Fragment() {
             val inputMgr = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMgr.hideSoftInputFromWindow(binding.phoneEditText.windowToken, 0)
 
+            binding.loading.visibility = View.VISIBLE
+            binding.loginPhone.isEnabled = false
+            binding.phoneEditText.isEnabled = false
+
             val credential = PhoneAuthProvider.getCredential(verificationCode, binding.phoneEditText.text.toString())
             viewModel.firebaseAuthWithCredentials(credential)
 
-            binding.loading.visibility = View.VISIBLE
-            binding.loginPhone.isEnabled = false
+            viewModel.authenticatedUserData.observe(viewLifecycleOwner, { user ->
+
+                if (user.isNew) {
+                    Timber.d("New User")
+                    viewModel.createNewUser(user)
+                    viewModel.createdUserLiveData.observe(viewLifecycleOwner, {
+
+                        if (it.isCreated) {
+                            Snackbar.make(binding.container , "User Created", Snackbar.LENGTH_LONG).show()
+                        }
+                        goToMainAppFlow()
+                    })
+                } else {
+                    Timber.d("Old User")
+                    goToMainAppFlow()
+                }
+            })
+
         }
+    }
+
+    private fun goToMainAppFlow() {
+        mainNavController?.navigate(LoginHostFragmentDirections.actionLoginHostFragmentToAppFlowHostFragment())
     }
 
     private fun verifyOtp() {
