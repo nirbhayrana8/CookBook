@@ -1,6 +1,5 @@
 package com.zenger.cookbook.adapters
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,13 +9,15 @@ import androidx.annotation.NonNull
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.zenger.cookbook.R
 import com.zenger.cookbook.databinding.ListLayoutBinding
 import com.zenger.cookbook.room.tables.RecipeTable
 
 class RecyclerViewAdapter(private val interaction: Interaction? = null) :
-    ListAdapter<RecipeTable, RecyclerViewAdapter.DiscoverViewHolder>(DIFF_CALLBACK) {
+        ListAdapter<RecipeTable, RecyclerViewAdapter.DiscoverViewHolder>(DIFF_CALLBACK) {
 
     lateinit var binding: ListLayoutBinding
 
@@ -29,7 +30,7 @@ class RecyclerViewAdapter(private val interaction: Interaction? = null) :
             }
 
             override fun areContentsTheSame(oldItem: RecipeTable, newItem: RecipeTable): Boolean {
-                return oldItem.title == newItem.title && oldItem.imageUrl == newItem.imageUrl
+                return oldItem == newItem
             }
 
         }
@@ -38,28 +39,30 @@ class RecyclerViewAdapter(private val interaction: Interaction? = null) :
 
     override fun onCreateViewHolder(@NonNull parent: ViewGroup, viewType: Int): DiscoverViewHolder {
 
-        binding = DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.list_layout,  parent,
-            false)
+        binding = DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.list_layout, parent,
+                false)
 
-        return DiscoverViewHolder(binding , interaction)
+        return DiscoverViewHolder(binding, interaction)
     }
 
     override fun onBindViewHolder(@NonNull holder: DiscoverViewHolder, position: Int) {
 
         val currentItem = getItem(position)
+
         holder.textView.text = currentItem.title
 
         Glide
-            .with(binding.root)
-            .load(currentItem.imageUrl)
-            .centerCrop()
-            .placeholder(R.drawable.ic_launcher_foreground)
-            .into(holder.imageView)
+                .with(binding.root)
+                .load(currentItem.imageUrl)
+                .centerCrop()
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .error(R.drawable.ic_baseline_error_24)
+                .into(holder.imageView)
     }
 
 
-    inner class DiscoverViewHolder (@NonNull itemView: ListLayoutBinding,
-        private val interaction: Interaction?) : RecyclerView.ViewHolder(itemView.root), View.OnClickListener {
+    inner class DiscoverViewHolder(@NonNull itemView: ListLayoutBinding,
+                                   private val interaction: Interaction?) : RecyclerView.ViewHolder(itemView.root), View.OnClickListener {
 
         var textView: TextView
         var imageView: ImageView
@@ -73,8 +76,9 @@ class RecyclerViewAdapter(private val interaction: Interaction? = null) :
 
 
         override fun onClick(v: View) {
-            interaction?.onItemSelected(adapterPosition)
+            interaction?.onItemSelected(bindingAdapterPosition)
         }
+
     }
 
     interface Interaction {

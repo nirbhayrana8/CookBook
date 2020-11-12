@@ -6,11 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.zenger.cookbook.R
 import com.zenger.cookbook.databinding.FragmentDetailBinding
 import com.zenger.cookbook.viewmodels.DetailViewModel
-import com.zenger.cookbook.viewmodels.factories.DetailViewModelFactory
 
 class DetailFragment : Fragment() {
 
@@ -20,12 +18,12 @@ class DetailFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        val viewModelFactory = DetailViewModelFactory(
-            DetailFragmentArgs.fromBundle(requireArguments()).sourceUrl?:"")
-        viewModel = ViewModelProvider(this, viewModelFactory).get(DetailViewModel::class.java)
+//        val viewModelFactory = DetailViewModelFactory(
+//            DetailFragmentArgs.fromBundle(requireArguments()).sourceUrl?:"")
+//        viewModel = ViewModelProvider(this, viewModelFactory).get(DetailViewModel::class.java)
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_detail, container, false)
-        binding.viewModel = viewModel
+//        binding.viewModel = viewModel
 
         return binding.root
     }

@@ -8,37 +8,52 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
 import com.zenger.cookbook.R
-import com.zenger.cookbook.adapters.RecyclerViewAdapter
+import com.zenger.cookbook.adapters.RecyclerAdapter
 import com.zenger.cookbook.databinding.FragmentDiscoverBinding
+import com.zenger.cookbook.room.tables.RecipeTable
 import com.zenger.cookbook.viewmodels.DiscoverViewModel
 import com.zenger.cookbook.viewmodels.factories.DiscoverViewModelFactory
+import timber.log.Timber
 
 
-class DiscoverFragment : Fragment(), RecyclerViewAdapter.Interaction {
+class DiscoverFragment : Fragment(), RecyclerAdapter.OnItemClickListener {
 
     private val factory by lazy { DiscoverViewModelFactory(requireActivity().application) }
     private val viewModel: DiscoverViewModel by viewModels { factory }
     private lateinit var binding: FragmentDiscoverBinding
-    private val adapter = RecyclerViewAdapter(this)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_discover, container, false)
+        return binding.root
+    }
 
-        binding.recyclerView.layoutManager = StaggeredGridLayoutManager(2, 1)
-        binding.recyclerView.adapter = adapter
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        val adapter = RecyclerAdapter(this)
+
+        binding.apply {
+            recyclerView.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+            recyclerView.setHasFixedSize(true)
+            recyclerView.adapter = adapter
+        }
+
+        Timber.d("Lookie hereeeeee mofo")
+
+        viewModel.randomRecipes.observe(viewLifecycleOwner) {
+            adapter.submitData(viewLifecycleOwner.lifecycle, it)
+        }
+
+        Timber.d("Lookie hereeeeee!!!")
         val layout = binding.toolBar
         val toolbar = layout.findViewById<MaterialToolbar>(R.id.toolBar)
         (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
-
-        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -49,26 +64,19 @@ class DiscoverFragment : Fragment(), RecyclerViewAdapter.Interaction {
             viewModel.listState = null
         }
 
-        viewModel.recipes.observe(viewLifecycleOwner, {
-            adapter.submitList(it)
-        })
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         viewModel.listState = binding.recyclerView.layoutManager?.onSaveInstanceState()
+        super.onDestroyView()
 
-        (requireActivity() as AppCompatActivity).supportActionBar?.hide()
     }
 
-    override fun onItemSelected(position: Int) {
-
+    override fun onItemClick(recipe: RecipeTable) {
         val view = requireActivity().findViewById<View>(R.id.constraintLayout)
         val snackBar = Snackbar.make(view, "Clicked", Snackbar.LENGTH_LONG)
         snackBar.anchorView = view.findViewById(R.id.bottomNav)
         snackBar.show()
 
-        findNavController().navigate(DiscoverFragmentDirections
-            .actionDiscoverFragmentToDetailFragment(viewModel.recipes.value!![position].sourceUrl))
     }
 }

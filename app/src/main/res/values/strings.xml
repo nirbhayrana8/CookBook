@@ -4,6 +4,7 @@
     <string name="discover">Discover</string>
     <string name="saved">My Recipes</string>
     <string name="back_button">Back Button</string>
+    <string name="recipe_image">Recipe Image</string>
     <string name="contentDescription">Image of Recipe</string>
     <string name="loremIpsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit,
         sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis

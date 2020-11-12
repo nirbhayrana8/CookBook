@@ -5,6 +5,8 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
 private const val BASE_URL = "https://api.spoonacular.com/recipes/"
@@ -12,8 +14,11 @@ private const val API_KEY = "1f38adb099804c48814af282525512cd"
 
 interface RecipeApi {
 
-    @GET("random?apiKey=$API_KEY")
-    suspend fun getRandomRecipe(): JsonObject
+    @GET("random")
+    suspend fun getRandomRecipe(@Query("apiKey") key: String = API_KEY, @Query("number") number: Int): RandomResponse
+
+    @GET("{id}/analyzedInstructions?apiKey=$API_KEY")
+    suspend fun getAnalysedRecipe(@Path("id") id: Int): JsonObject
 
     companion object {
 

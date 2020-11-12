@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
@@ -49,14 +48,14 @@ class RecipeFragment : Fragment(), RecyclerViewAdapter.Interaction {
             viewModel.listState = null
         }
 
-        viewModel.recipes.observe(viewLifecycleOwner, Observer {
+        viewModel.recipes.observe(viewLifecycleOwner, {
             adapter.submitList(it)
         })
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         viewModel.listState = binding.recyclerView.layoutManager?.onSaveInstanceState()
+        super.onDestroyView()
     }
 
     override fun onItemSelected(position: Int) {

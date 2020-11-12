@@ -1,22 +1,18 @@
 package com.zenger.cookbook.repository
 
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import com.bumptech.glide.Glide
 
-class HelperClient(private val currentUrl: String): WebViewClient() {
-
-    override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-        return url != currentUrl
-    }
-}
 
 object Util {
 
-    @BindingAdapter("loadUrl")
+    @BindingAdapter("loadImage")
     @JvmStatic
-    fun WebView.viewUrl(url: String) {
-        this.webViewClient = HelperClient(url)
-        this.loadUrl(url)
+    fun ImageView.loadImage(url: String) {
+        Glide.with(this)
+                .load(url)
+                .centerCrop()
+                .into(this)
     }
 }
