@@ -105,7 +105,7 @@ class PhoneSignInFragment : Fragment() {
             val phoneNumber = code + binding.phoneEditText.text.toString()
 
             PhoneAuthProvider.getInstance()
-                .verifyPhoneNumber(phoneNumber, 60, TimeUnit.SECONDS, requireActivity(), callbacks)
+                    .verifyPhoneNumber(phoneNumber, 60, TimeUnit.SECONDS, requireActivity(), callbacks)
 
             val inputMgr = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMgr.hideSoftInputFromWindow(binding.phoneEditText.windowToken, 0)
@@ -113,7 +113,7 @@ class PhoneSignInFragment : Fragment() {
             binding.loading.visibility = View.VISIBLE
             binding.loginPhone.isEnabled = false
             binding.phoneEditText.isEnabled = false
-            
+
         } else {
             binding.phoneEditText.error = getString(R.string.invalid_phone_number)
         }
@@ -127,11 +127,13 @@ class PhoneSignInFragment : Fragment() {
         val regex = Regex("^\\d{10}$")
 
         val observable = binding.phoneEditText.inputStream()
-            .debounce(750, TimeUnit.MILLISECONDS)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+                .debounce(750, TimeUnit.MILLISECONDS)
+                .filter { it.isNotEmpty() }
+                .distinctUntilChanged()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
 
-        observable.subscribe(object : Observer<String>{
+        observable.subscribe(object : Observer<String> {
 
             override fun onSubscribe(d: Disposable?) {
                 disposables.add(d)

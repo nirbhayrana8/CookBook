@@ -1,23 +1,24 @@
 package com.zenger.cookbook.repository
 
 import android.app.Application
+import android.database.MatrixCursor
 import androidx.lifecycle.LiveData
-import com.google.gson.JsonObject
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import com.zenger.cookbook.api.RecipeApi
+import com.zenger.cookbook.api.SuggestionObj
+import com.zenger.cookbook.paging.DiscoverPagingSource
 import com.zenger.cookbook.room.RecipeDatabase
 import com.zenger.cookbook.room.dao.RecipeDao
 import com.zenger.cookbook.room.dao.SavedDao
 import com.zenger.cookbook.room.tables.RecipeTable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
 class DataRepository(application: Application) {
     private val dao: RecipeDao
     private val savedDao: SavedDao
+    private val api by lazy { RecipeApi.getApi() }
 
     init {
         val database = RecipeDatabase.getInstance(application) as RecipeDatabase
@@ -25,34 +26,32 @@ class DataRepository(application: Application) {
         savedDao = database.savedDao()
     }
 
-
+    fun randomRecipes() = Pager(
+            config = PagingConfig(
+                    pageSize = 4,
+                    prefetchDistance = 1,
+                    maxSize = 80,
+                    enablePlaceholders = false
+            ),
+            pagingSourceFactory = { DiscoverPagingSource() }
+    )
 
     fun getRecipes(): LiveData<List<RecipeTable>> {
         Timber.d("getRecipes Called")
         return dao.viewAll()
     }
 
-    fun getAnalysedRecipe(id: Int) {
 
-        CoroutineScope(IO).launch {
-            val result = async { RecipeApi.getApi().getAnalysedRecipe(id) }
-            parseAnalysed(result.await())
+    suspend fun getAutoCompleteSuggestions(query: String) = api.getAutoCompleteSuggestions(query = query)
+
+    fun convertSuggestionToCursor(suggestions: List<SuggestionObj>): MatrixCursor {
+        val cursor = MatrixCursor(arrayOf("_id", "title"))
+        for (suggestion in suggestions) {
+            cursor.addRow(arrayOf(suggestion.id, suggestion.title))
         }
-
+        return cursor
     }
 
-
-    private fun parseAnalysed(result: JsonObject) {
-
-        val json = result.asJsonArray
-        var RESULT: String
-
-        for (items in json) {
-
-            val item = items as JsonObject
-            val name = item.get("name").asString
-        }
-    }
 
     private suspend fun insertToDb(recipeTable: RecipeTable) {
         dao.insert(recipeTable)

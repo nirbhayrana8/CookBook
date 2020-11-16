@@ -31,5 +31,8 @@
     <!-- Strings related to facebook -->
     <string name="facebook_app_id">318282212750270</string>
     <string name="fb_login_protocol_scheme">fb318282212750270</string>
+    <string name="results_could_not_be_loaded">Results could not be loaded</string>
+    <string name="retry">Retry</string>
+    <string name="search">Search</string>
 
 </resources>

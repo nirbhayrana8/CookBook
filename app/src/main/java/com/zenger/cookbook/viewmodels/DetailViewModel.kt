@@ -15,7 +15,6 @@ class DetailViewModel(id: Int, imageUrl: String, application: Application): View
     val imageUrl by lazy { MutableLiveData<String>().apply { value = imageUrl } }
 
     init {
-        repository.getAnalysedRecipe(id)
     }
 
     fun updateSteps(string: String) {

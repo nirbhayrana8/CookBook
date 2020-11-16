@@ -20,6 +20,11 @@ interface RecipeApi {
     @GET("{id}/analyzedInstructions?apiKey=$API_KEY")
     suspend fun getAnalysedRecipe(@Path("id") id: Int): JsonObject
 
+    @GET("autocomplete")
+    suspend fun getAutoCompleteSuggestions(@Query("apiKey") key: String = API_KEY,
+                                           @Query("number") number: Int = 4,
+                                           @Query("query") query: String): List<SuggestionObj>
+
     companion object {
 
         private val client = OkHttpClient.Builder()
