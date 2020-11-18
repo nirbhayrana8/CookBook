@@ -2,14 +2,15 @@ package com.zenger.cookbook.paging
 
 import androidx.paging.PagingSource
 import com.zenger.cookbook.api.RecipeApi
-import com.zenger.cookbook.room.tables.RecipeTable
+import com.zenger.cookbook.api.classes.RandomObj
 import retrofit2.HttpException
 import java.io.IOException
 
 private const val STARTING_PAGE_INDEX = 1
-class DiscoverPagingSource: PagingSource<Int, RecipeTable>() {
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, RecipeTable> {
+class DiscoverPagingSource : PagingSource<Int, RandomObj>() {
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, RandomObj> {
         val position = params.key ?: STARTING_PAGE_INDEX
 
         return try {

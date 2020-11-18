@@ -8,19 +8,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.zenger.cookbook.R
+import com.zenger.cookbook.api.classes.RandomObj
 import com.zenger.cookbook.databinding.ListLayoutBinding
-import com.zenger.cookbook.room.tables.RecipeTable
 
-class RecyclerAdapter(private val listener: OnItemClickListener):
-        PagingDataAdapter<RecipeTable, RecyclerAdapter.ViewHolder>(DIFF_CALLBACK) {
+class RecyclerAdapter(private val listener: OnItemClickListener) :
+        PagingDataAdapter<RandomObj, RecyclerAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
 
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<RecipeTable>() {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<RandomObj>() {
 
-            override fun areItemsTheSame(oldItem: RecipeTable, newItem: RecipeTable) = oldItem.id == newItem.id
+            override fun areItemsTheSame(oldItem: RandomObj, newItem: RandomObj) = oldItem.id == newItem.id
 
-            override fun areContentsTheSame(oldItem: RecipeTable, newItem: RecipeTable) = oldItem == newItem
+            override fun areContentsTheSame(oldItem: RandomObj, newItem: RandomObj) = oldItem == newItem
 
         }
     }
@@ -49,7 +49,7 @@ class RecyclerAdapter(private val listener: OnItemClickListener):
             }
         }
 
-        fun bind(recipe: RecipeTable) {
+        fun bind(recipe: RandomObj) {
 
             binding.apply {
                 Glide
@@ -66,7 +66,7 @@ class RecyclerAdapter(private val listener: OnItemClickListener):
     }
 
     interface OnItemClickListener {
-        fun onItemClick(recipe: RecipeTable)
+        fun onItemClick(recipe: RandomObj)
     }
 
 }

@@ -6,14 +6,17 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.zenger.cookbook.room.dao.RecipeDao
 import com.zenger.cookbook.room.dao.SavedDao
+import com.zenger.cookbook.room.dao.SearchDao
 import com.zenger.cookbook.room.tables.RecipeTable
 import com.zenger.cookbook.room.tables.SavedRecipeTable
+import com.zenger.cookbook.room.tables.SearchResultsTable
 
-@Database(entities = [RecipeTable::class, SavedRecipeTable::class], version = 2, exportSchema = false)
+@Database(entities = [RecipeTable::class, SavedRecipeTable::class, SearchResultsTable::class], version = 3, exportSchema = false)
 abstract class RecipeDatabase: RoomDatabase() {
 
     abstract fun recipeDao(): RecipeDao
     abstract fun savedDao(): SavedDao
+    abstract fun searchDao(): SearchDao
 
     companion object {
 

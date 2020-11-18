@@ -48,9 +48,9 @@ class RecipeFragment : Fragment(), RecyclerViewAdapter.Interaction {
             viewModel.listState = null
         }
 
-        viewModel.recipes.observe(viewLifecycleOwner, {
+        /*viewModel.recipes.observe(viewLifecycleOwner, {
             adapter.submitList(it)
-        })
+        })*/
     }
 
     override fun onDestroyView() {

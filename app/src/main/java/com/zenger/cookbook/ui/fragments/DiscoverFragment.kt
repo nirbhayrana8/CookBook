@@ -15,8 +15,8 @@ import com.zenger.cookbook.R
 import com.zenger.cookbook.adapters.LoadStateAdapter
 import com.zenger.cookbook.adapters.RecyclerAdapter
 import com.zenger.cookbook.adapters.SuggestionsAdapter
+import com.zenger.cookbook.api.classes.RandomObj
 import com.zenger.cookbook.databinding.FragmentDiscoverBinding
-import com.zenger.cookbook.room.tables.RecipeTable
 import com.zenger.cookbook.viewmodels.DiscoverViewModel
 import com.zenger.cookbook.viewmodels.factories.DiscoverViewModelFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -78,12 +78,14 @@ class DiscoverFragment : Fragment(), RecyclerAdapter.OnItemClickListener {
 
 
         val autoCompleteTextView = searchView.findViewById<AutoCompleteTextView>(R.id.search_src_text)
-        autoCompleteTextView.setDropDownBackgroundResource(R.color.active_tab_color)
+        autoCompleteTextView.setDropDownBackgroundResource(R.color.transparent)
+
+        autoCompleteTextView.hint = getString(R.string.search_hint)
 
         // Add a observer for the stream from the SearchView
         observer()
 
-        searchView.setOnSuggestionListener(object : SearchView.OnSuggestionListener{
+        searchView.setOnSuggestionListener(object : SearchView.OnSuggestionListener {
             override fun onSuggestionSelect(position: Int): Boolean {
                 return true
             }
@@ -141,7 +143,7 @@ class DiscoverFragment : Fragment(), RecyclerAdapter.OnItemClickListener {
 
     }
 
-    override fun onItemClick(recipe: RecipeTable) {
+    override fun onItemClick(recipe: RandomObj) {
         val view = requireActivity().findViewById<View>(R.id.constraintLayout)
         val snackBar = Snackbar.make(view, "Clicked", Snackbar.LENGTH_LONG)
         snackBar.anchorView = view.findViewById(R.id.bottomNav)
@@ -156,6 +158,7 @@ class DiscoverFragment : Fragment(), RecyclerAdapter.OnItemClickListener {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<String> {
+
                     override fun onSubscribe(d: Disposable?) {
                         disposables.add(d)
                     }

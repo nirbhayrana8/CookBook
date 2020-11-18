@@ -14,6 +14,6 @@ interface RecipeDao: BaseDao<RecipeTable> {
 
     @JvmSuppressWildcards
     @Query("DELETE FROM recipe_table")
-    suspend fun clear()
+    suspend fun clearDB()
 
 }

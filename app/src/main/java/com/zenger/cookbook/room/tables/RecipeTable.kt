@@ -10,20 +10,22 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @Entity(tableName = "recipe_table")
-data class RecipeTable (@PrimaryKey
-                  @SerializedName("id")
-                  @Expose
-                  val id: Int,
+data class RecipeTable(
 
-                  @SerializedName("title")
-                  @Expose
-                  val title: String,
+        @PrimaryKey
+        @SerializedName("id")
+        @Expose
+        val id: Int,
 
-                  @SerializedName("image")
-                  @Expose
-                  @ColumnInfo(name = "image_url")
-                  val imageUrl: String,
+        @SerializedName("title")
+        @Expose
+        val title: String,
 
-                  @SerializedName("sourceUrl")
-                  @Expose
-                  val sourceUrl: String?) : Parcelable
+        @SerializedName("image")
+        @Expose
+        @ColumnInfo(name = "image_url")
+        val imageUrl: String,
+
+        @SerializedName("sourceUrl")
+        @Expose
+        val sourceUrl: String?) : Parcelable

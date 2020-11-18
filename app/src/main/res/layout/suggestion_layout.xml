@@ -2,14 +2,14 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="3dp"
+            android:layout_height="45dp"
             android:elevation="5dp"
             android:padding="6dp"
             app:cardCornerRadius="5dp">
@@ -18,6 +18,7 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:paddingStart="4dp"
                 android:paddingEnd="2dp"
                 android:textAlignment="center"
@@ -25,6 +26,10 @@
                 android:textSize="16sp" />
 
         </androidx.cardview.widget.CardView>
-    </FrameLayout>
+
+        <View
+            style="@style/Divider"
+            android:layout_below="@+id/container" />
+    </RelativeLayout>
 
 </layout>
