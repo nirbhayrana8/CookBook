@@ -7,9 +7,14 @@ import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "search_results")
 data class SearchResultsTable(
-        @PrimaryKey
+
+        @PrimaryKey(autoGenerate = true)
+        @ColumnInfo(name = "id")
+        val id: Long = 0,
+
         @SerializedName("id")
-        val id: Int,
+        @ColumnInfo(name = "item_id")
+        val itemId: Int,
 
         @ColumnInfo(name = "image_url")
         @SerializedName("image")

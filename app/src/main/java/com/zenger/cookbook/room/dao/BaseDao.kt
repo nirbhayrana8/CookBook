@@ -10,7 +10,7 @@ interface BaseDao<T> {
     suspend fun insert(obj: T)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(vararg obj: T)
+    suspend fun insertAll(obj: List<T>)
 
     @Delete
     suspend fun delete(obj: T)

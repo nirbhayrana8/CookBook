@@ -15,6 +15,9 @@
         <action
             android:id="@+id/action_discoverFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
+        <action
+            android:id="@+id/action_discoverFragment_to_searchApiFragment"
+            app:destination="@id/searchApiFragment" />
     </fragment>
     <fragment
         android:id="@+id/recipeFragment"
@@ -37,5 +40,14 @@
             android:name="sourceUrl"
             app:argType="string"
             app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchApiFragment"
+        android:name="com.zenger.cookbook.ui.fragments.SearchApiFragment"
+        android:label="SearchApiFragment"
+        tools:layout="@layout/fragment_api_search">
+        <argument
+            android:name="query"
+            app:argType="string" />
     </fragment>
 </navigation>

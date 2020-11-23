@@ -8,13 +8,13 @@ import java.io.IOException
 
 private const val STARTING_PAGE_INDEX = 1
 
-class DiscoverPagingSource : PagingSource<Int, RandomObj>() {
+class DiscoverPagingSource(private val api: RecipeApi) : PagingSource<Int, RandomObj>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, RandomObj> {
         val position = params.key ?: STARTING_PAGE_INDEX
 
         return try {
-            val randomRequest = RecipeApi.getApi().getRandomRecipe(number = params.loadSize)
+            val randomRequest = api.getRandomRecipe(number = params.loadSize)
             val recipes = randomRequest.recipes
 
             LoadResult.Page(

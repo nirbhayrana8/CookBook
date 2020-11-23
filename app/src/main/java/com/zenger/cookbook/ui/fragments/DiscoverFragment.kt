@@ -9,6 +9,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
 import com.zenger.cookbook.R
@@ -103,9 +104,18 @@ class DiscoverFragment : Fragment(), RecyclerAdapter.OnItemClickListener {
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                subject.onComplete()
-                binding.recyclerView.scrollToPosition(0)
-                searchView.clearFocus()
+                if (searchView.query.isNotEmpty()) {
+                    subject.onComplete()
+                    searchView.clearFocus()
+
+                    query?.let {
+                        findNavController().navigate(DiscoverFragmentDirections.actionDiscoverFragmentToSearchApiFragment(query))
+                    }
+                } else {
+                    Snackbar.make(binding.root, "Enter a search query", Snackbar.LENGTH_SHORT)
+                            .setAnchorView(binding.toolBar)
+                            .show()
+                }
 
                 return true
             }
@@ -152,7 +162,7 @@ class DiscoverFragment : Fragment(), RecyclerAdapter.OnItemClickListener {
     }
 
     private fun observer() {
-        subject.debounce(500, TimeUnit.MILLISECONDS)
+        subject.debounce(400, TimeUnit.MILLISECONDS)
                 .filter { it.isNotEmpty() }
                 .distinctUntilChanged()
                 .subscribeOn(Schedulers.io())

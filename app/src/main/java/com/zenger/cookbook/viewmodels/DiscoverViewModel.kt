@@ -8,7 +8,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import androidx.paging.liveData
 import com.zenger.cookbook.repository.DataRepository
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -23,7 +22,8 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
     private val _cursor by lazy { MutableLiveData<Cursor>() }
     val cursor: LiveData<Cursor> get() = _cursor
 
-    val randomRecipes = repository.randomRecipes().liveData.cachedIn(viewModelScope)
+
+    val randomRecipes = repository.randomRecipes().cachedIn(viewModelScope)
 
     fun getSuggestions(query: String) {
         viewModelScope.launch(IO) {
