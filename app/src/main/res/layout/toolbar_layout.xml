@@ -11,8 +11,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:theme="@style/ToolBarStyle"
-                app:collapsedTitleGravity="start"
-                app:layout_scrollFlags="scroll|enterAlways"/>
+                app:collapsedTitleGravity="start" />
 
     </com.google.android.material.appbar.AppBarLayout>
 </merge>

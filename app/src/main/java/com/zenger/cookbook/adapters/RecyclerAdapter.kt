@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.zenger.cookbook.R
-import com.zenger.cookbook.api.classes.RandomObj
+import com.zenger.cookbook.api.models.RandomObj
 import com.zenger.cookbook.databinding.ListLayoutBinding
 
 class RecyclerAdapter(private val listener: OnItemClickListener) :

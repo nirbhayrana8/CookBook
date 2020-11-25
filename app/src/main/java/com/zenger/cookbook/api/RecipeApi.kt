@@ -1,13 +1,15 @@
 package com.zenger.cookbook.api
 
 import com.google.gson.GsonBuilder
-import com.zenger.cookbook.api.classes.RandomResponse
-import com.zenger.cookbook.api.classes.SearchResponse
-import com.zenger.cookbook.api.classes.SuggestionObj
+import com.zenger.cookbook.api.models.RandomResponse
+import com.zenger.cookbook.api.models.RecipeInstruction
+import com.zenger.cookbook.api.models.SearchResponse
+import com.zenger.cookbook.api.models.SuggestionObj
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
@@ -32,6 +34,10 @@ interface RecipeApi {
                              @Query("offset") offset: Int = 0,
                              @Query("query") query: String): SearchResponse
 
+    @GET("{id}/analyzedInstructions")
+    suspend fun getRecipeInstructions(@Path("id") id: Int,
+                                      @Query("apiKey") key: String = API_KEY): List<RecipeInstruction>
+
     companion object {
 
         private val client = OkHttpClient.Builder()
@@ -44,11 +50,10 @@ interface RecipeApi {
         fun getApi(): RecipeApi = Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(client)
-                .addConverterFactory(GsonConverterFactory
-                        .create(
-                                GsonBuilder().excludeFieldsWithoutExposeAnnotation().create())
+                .addConverterFactory(GsonConverterFactory.create(
+                        GsonBuilder().excludeFieldsWithoutExposeAnnotation().create())
                 )
-            .build()
-            .create(RecipeApi::class.java)
+                .build()
+                .create(RecipeApi::class.java)
     }
 }

@@ -5,6 +5,7 @@
     <string name="saved">My Recipes</string>
     <string name="back_button">Back Button</string>
     <string name="recipe_image">Recipe Image</string>
+    <string name="save_recipe_button">Save Recipe Button</string>
     <string name="contentDescription">Image of Recipe</string>
     <string name="search_api">Search Recipes </string>
     <string name="search_saved">Search your saved recipes</string>
@@ -39,5 +40,7 @@
     <string name="results_could_not_be_loaded">Results could not be loaded</string>
     <string name="retry">Retry</string>
     <string name="search">Search</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="steps">Steps</string>
 
 </resources>

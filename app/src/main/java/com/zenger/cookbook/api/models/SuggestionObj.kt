@@ -1,4 +1,4 @@
-package com.zenger.cookbook.api.classes
+package com.zenger.cookbook.api.models
 
 import com.google.gson.annotations.Expose
 

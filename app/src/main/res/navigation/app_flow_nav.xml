@@ -37,17 +37,19 @@
         tools:layout="@layout/fragment_detail"
         android:label="DetailFragment">
         <argument
-            android:name="sourceUrl"
-            app:argType="string"
-            app:nullable="true" />
+            android:name="recipeObject"
+            app:argType="com.zenger.cookbook.api.models.Recipe" />
     </fragment>
     <fragment
         android:id="@+id/searchApiFragment"
         android:name="com.zenger.cookbook.ui.fragments.SearchApiFragment"
         android:label="SearchApiFragment"
-        tools:layout="@layout/fragment_api_search">
+        tools:layout="@layout/fragment_search_api">
         <argument
             android:name="query"
             app:argType="string" />
+        <action
+            android:id="@+id/action_searchApiFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
     </fragment>
 </navigation>

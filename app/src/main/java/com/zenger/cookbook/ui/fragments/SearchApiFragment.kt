@@ -7,24 +7,25 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.google.android.material.snackbar.Snackbar
+import androidx.navigation.fragment.findNavController
 import com.zenger.cookbook.R
 import com.zenger.cookbook.adapters.LoadStateAdapter
 import com.zenger.cookbook.adapters.SearchApiAdapter
-import com.zenger.cookbook.databinding.FragmentApiSearchBinding
+import com.zenger.cookbook.api.models.Recipe
+import com.zenger.cookbook.databinding.FragmentSearchApiBinding
 import com.zenger.cookbook.room.tables.SearchResultsTable
 import com.zenger.cookbook.viewmodels.SearchApiViewModel
 import com.zenger.cookbook.viewmodels.factories.SearchApiViewModelFactory
 
-class SearchApiFragment : Fragment(R.layout.fragment_api_search), SearchApiAdapter.OnItemClickListener {
+class SearchApiFragment : Fragment(R.layout.fragment_search_api), SearchApiAdapter.OnItemClickListener {
 
     private val factory by lazy { SearchApiViewModelFactory(requireActivity().application) }
     private val viewModel by viewModels<SearchApiViewModel> { factory }
 
-    private lateinit var binding: FragmentApiSearchBinding
+    private lateinit var binding: FragmentSearchApiBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_api_search, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search_api, container, false)
         return binding.root
     }
 
@@ -52,10 +53,11 @@ class SearchApiFragment : Fragment(R.layout.fragment_api_search), SearchApiAdapt
     }
 
     override fun onItemClick(searchResults: SearchResultsTable) {
-        val view = requireActivity().findViewById<View>(R.id.constraintLayout)
-        val snackBar = Snackbar.make(view, "Clicked", Snackbar.LENGTH_LONG)
-        snackBar.anchorView = view.findViewById(R.id.bottomNav)
-        snackBar.show()
+
+        val recipe = Recipe(id = searchResults.itemId, title = searchResults.title, imageUrl = searchResults.imageUrl)
+        val action = SearchApiFragmentDirections.actionSearchApiFragmentToDetailFragment(recipe)
+
+        findNavController().navigate(action)
     }
 
 }

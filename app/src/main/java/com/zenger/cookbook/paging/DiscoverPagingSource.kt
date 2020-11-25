@@ -2,7 +2,7 @@ package com.zenger.cookbook.paging
 
 import androidx.paging.PagingSource
 import com.zenger.cookbook.api.RecipeApi
-import com.zenger.cookbook.api.classes.RandomObj
+import com.zenger.cookbook.api.models.RandomObj
 import retrofit2.HttpException
 import java.io.IOException
 

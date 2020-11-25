@@ -16,7 +16,8 @@ import com.zenger.cookbook.R
 import com.zenger.cookbook.adapters.LoadStateAdapter
 import com.zenger.cookbook.adapters.RecyclerAdapter
 import com.zenger.cookbook.adapters.SuggestionsAdapter
-import com.zenger.cookbook.api.classes.RandomObj
+import com.zenger.cookbook.api.models.RandomObj
+import com.zenger.cookbook.api.models.Recipe
 import com.zenger.cookbook.databinding.FragmentDiscoverBinding
 import com.zenger.cookbook.viewmodels.DiscoverViewModel
 import com.zenger.cookbook.viewmodels.factories.DiscoverViewModelFactory
@@ -38,7 +39,7 @@ class DiscoverFragment : Fragment(), RecyclerAdapter.OnItemClickListener {
     private val disposables by lazy { CompositeDisposable() }
     private val subject = PublishSubject.create<String>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_discover, container, false)
         return binding.root
@@ -154,10 +155,11 @@ class DiscoverFragment : Fragment(), RecyclerAdapter.OnItemClickListener {
     }
 
     override fun onItemClick(recipe: RandomObj) {
-        val view = requireActivity().findViewById<View>(R.id.constraintLayout)
-        val snackBar = Snackbar.make(view, "Clicked", Snackbar.LENGTH_LONG)
-        snackBar.anchorView = view.findViewById(R.id.bottomNav)
-        snackBar.show()
+
+        val item = Recipe(id = recipe.id, title = recipe.title, imageUrl = recipe.imageUrl)
+        val action = DiscoverFragmentDirections.actionDiscoverFragmentToDetailFragment(item)
+
+        findNavController().navigate(action)
 
     }
 

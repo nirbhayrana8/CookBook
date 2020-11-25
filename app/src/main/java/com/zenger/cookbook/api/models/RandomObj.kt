@@ -1,4 +1,4 @@
-package com.zenger.cookbook.api.classes
+package com.zenger.cookbook.api.models
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -12,8 +12,5 @@ data class RandomObj(
 
         @SerializedName("image")
         @Expose
-        val imageUrl: String,
-
-        @Expose
-        val sourceUrl: String?
+        val imageUrl: String
 )
