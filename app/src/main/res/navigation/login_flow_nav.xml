@@ -9,28 +9,13 @@
         android:id="@+id/loginFragment"
         android:name="com.zenger.cookbook.ui.fragments.LoginFragment"
         android:label="LoginFragment"
-        tools:layout="@layout/fragment_login">
-        <action
-            android:id="@+id/action_loginFragment_to_phoneSignInFragment"
-            app:destination="@id/phoneSignInFragment"
-            app:enterAnim="@anim/enter_from_right"
-            app:exitAnim="@anim/exit_to_left"
-            app:launchSingleTop="true" />
-    </fragment>
+        tools:layout="@layout/fragment_login" />
 
     <fragment
         android:id="@+id/phoneSignInFragment"
         android:name="com.zenger.cookbook.ui.fragments.PhoneSignInFragment"
         android:label="PhoneSignInFragment"
         tools:layout="@layout/fragment_phone_sign_in">
-        <action
-            android:id="@+id/action_phoneSignInFragment_to_loginFragment"
-            app:destination="@id/loginFragment"
-            app:enterAnim="@anim/enter_from_left"
-            app:exitAnim="@anim/exit_to_right"
-            app:launchSingleTop="true"
-            app:popUpTo="@id/phoneSignInFragment"
-            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_phoneSignInFragment_to_otpFragment"
             app:destination="@id/otpFragment"
@@ -46,13 +31,5 @@
         <argument
             android:name="verificationCode"
             app:argType="string" />
-        <action
-            android:id="@+id/action_otpFragment_to_phoneSignInFragment"
-            app:destination="@id/phoneSignInFragment"
-            app:enterAnim="@anim/enter_from_left"
-            app:exitAnim="@anim/exit_to_left"
-            app:launchSingleTop="true"
-            app:popUpTo="@id/otpFragment"
-            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

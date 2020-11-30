@@ -1,19 +1,16 @@
 package com.zenger.cookbook.room.dao
 
-import androidx.lifecycle.LiveData
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
-import com.zenger.cookbook.room.tables.RecipeTable
 import com.zenger.cookbook.room.tables.SavedRecipeTable
 
 @Dao
 interface SavedDao: BaseDao<SavedRecipeTable> {
 
-    @JvmSuppressWildcards
     @Query("SELECT * FROM saved_recipes")
-    fun viewAll(): LiveData<List<RecipeTable>>
+    fun viewAll(): PagingSource<Int, SavedRecipeTable>
 
-    @JvmSuppressWildcards
     @Query("DELETE FROM saved_recipes")
-    suspend fun clear()
+    suspend fun clearDB()
 }

@@ -8,17 +8,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
 import com.zenger.cookbook.R
 import com.zenger.cookbook.adapters.LoadStateAdapter
-import com.zenger.cookbook.adapters.RecyclerAdapter
+import com.zenger.cookbook.adapters.SearchApiAdapter
 import com.zenger.cookbook.adapters.SuggestionsAdapter
-import com.zenger.cookbook.api.models.RandomObj
 import com.zenger.cookbook.api.models.Recipe
 import com.zenger.cookbook.databinding.FragmentDiscoverBinding
+import com.zenger.cookbook.room.tables.SearchResultsTable
 import com.zenger.cookbook.viewmodels.DiscoverViewModel
 import com.zenger.cookbook.viewmodels.factories.DiscoverViewModelFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -30,10 +30,10 @@ import io.reactivex.rxjava3.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
 
-class DiscoverFragment : Fragment(), RecyclerAdapter.OnItemClickListener {
+class DiscoverFragment : Fragment(), SearchApiAdapter.OnItemClickListener {
 
     private val factory by lazy { DiscoverViewModelFactory(requireActivity().application) }
-    private val viewModel: DiscoverViewModel by viewModels { factory }
+    private val viewModel: DiscoverViewModel by navGraphViewModels(R.id.app_flow_nav) { factory }
     private lateinit var binding: FragmentDiscoverBinding
 
     private val disposables by lazy { CompositeDisposable() }
@@ -42,13 +42,8 @@ class DiscoverFragment : Fragment(), RecyclerAdapter.OnItemClickListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_discover, container, false)
-        return binding.root
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val adapter = RecyclerAdapter(this)
+        val adapter = SearchApiAdapter(this)
 
         binding.apply {
             recyclerView.setHasFixedSize(true)
@@ -60,8 +55,14 @@ class DiscoverFragment : Fragment(), RecyclerAdapter.OnItemClickListener {
 
         viewModel.randomRecipes.observe(viewLifecycleOwner) {
             adapter.submitData(viewLifecycleOwner.lifecycle, it)
+
         }
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val layout = binding.toolBar
         val toolbar = layout.findViewById<MaterialToolbar>(R.id.toolBar)
@@ -124,14 +125,7 @@ class DiscoverFragment : Fragment(), RecyclerAdapter.OnItemClickListener {
             override fun onQueryTextChange(newText: String?): Boolean {
                 newText?.let { subject.onNext(newText) }
 
-                viewModel.cursor.observe(viewLifecycleOwner) {
-                    try {
-                        val adapter = SuggestionsAdapter(requireContext(), it!!, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER)
-                        searchView.suggestionsAdapter = adapter
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
+                observeCursor(searchView)
                 return true
             }
         })
@@ -154,9 +148,9 @@ class DiscoverFragment : Fragment(), RecyclerAdapter.OnItemClickListener {
 
     }
 
-    override fun onItemClick(recipe: RandomObj) {
+    override fun onItemClick(searchResults: SearchResultsTable) {
 
-        val item = Recipe(id = recipe.id, title = recipe.title, imageUrl = recipe.imageUrl)
+        val item = Recipe(id = searchResults.itemId, title = searchResults.title, imageUrl = searchResults.imageUrl)
         val action = DiscoverFragmentDirections.actionDiscoverFragmentToDetailFragment(item)
 
         findNavController().navigate(action)
@@ -183,6 +177,19 @@ class DiscoverFragment : Fragment(), RecyclerAdapter.OnItemClickListener {
 
                     override fun onComplete() {}
                 })
+    }
+
+    private fun observeCursor(searchView: SearchView) {
+        if (view != null) {
+            viewModel.cursor.observe(viewLifecycleOwner) {
+                try {
+                    val adapter = SuggestionsAdapter(requireContext(), it!!, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER)
+                    searchView.suggestionsAdapter = adapter
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
     }
 
 }

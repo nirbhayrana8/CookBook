@@ -7,35 +7,35 @@
     <fragment
         android:id="@+id/discoverFragment"
         android:name="com.zenger.cookbook.ui.fragments.DiscoverFragment"
-        tools:layout="@layout/fragment_discover"
-        android:label="DiscoverFragment">
-        <action
-            android:id="@+id/action_discoverFragment_to_recipeFragment"
-            app:destination="@id/recipeFragment" />
+        android:label="DiscoverFragment"
+        tools:layout="@layout/fragment_discover">
         <action
             android:id="@+id/action_discoverFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
         <action
             android:id="@+id/action_discoverFragment_to_searchApiFragment"
             app:destination="@id/searchApiFragment" />
+        <action
+            android:id="@+id/action_discoverFragment_to_recipeFragment"
+            app:destination="@id/recipeFragment" />
     </fragment>
     <fragment
         android:id="@+id/recipeFragment"
         android:name="com.zenger.cookbook.ui.fragments.RecipeFragment"
-        tools:layout="@layout/fragment_recipe"
-        android:label="fragment_recipe">
-        <action
-            android:id="@+id/action_recipeFragment_to_discoverFragment"
-            app:destination="@id/discoverFragment" />
+        android:label="fragment_recipe"
+        tools:layout="@layout/fragment_recipe">
         <action
             android:id="@+id/action_recipeFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
+        <action
+            android:id="@+id/action_recipeFragment_to_discoverFragment"
+            app:destination="@id/discoverFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
         android:name="com.zenger.cookbook.ui.fragments.DetailFragment"
-        tools:layout="@layout/fragment_detail"
-        android:label="DetailFragment">
+        android:label="DetailFragment"
+        tools:layout="@layout/fragment_detail">
         <argument
             android:name="recipeObject"
             app:argType="com.zenger.cookbook.api.models.Recipe" />

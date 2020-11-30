@@ -13,7 +13,7 @@ import com.zenger.cookbook.R
 import com.zenger.cookbook.repository.AuthRepository
 import com.zenger.cookbook.repository.User
 
-class LoginViewModel(private val application: Application) : ViewModel() {
+class LoginViewModel(application: Application) : ViewModel() {
 
     private val authRepository by lazy { AuthRepository() }
 

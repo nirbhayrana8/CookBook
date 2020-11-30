@@ -1,11 +1,18 @@
 package com.zenger.cookbook.repository
 
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.lifecycle.MutableLiveData
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 class AuthRepository {
 
@@ -17,28 +24,28 @@ class AuthRepository {
     fun firebaseAuthWithCredentials(authCredentials: AuthCredential): MutableLiveData<User> {
         val authenticatedUserMutableLiveData = MutableLiveData<User>()
         firebaseAuth.signInWithCredential(authCredentials)
-            .addOnCompleteListener { authTask ->
-                if (authTask.isSuccessful) {
-                    val isNewUser = authTask.result?.additionalUserInfo?.isNewUser!!
-                    val firebaseUser = firebaseAuth.currentUser
+                .addOnCompleteListener { authTask ->
+                    if (authTask.isSuccessful) {
+                        val isNewUser = authTask.result?.additionalUserInfo?.isNewUser!!
+                        val firebaseUser = firebaseAuth.currentUser
 
-                    if (firebaseUser != null) {
-                        val uid = firebaseUser.uid
-                        val name = firebaseUser.displayName
-                        val email = firebaseUser.email
-                        val photo = firebaseUser.photoUrl
-                        val phoneNumber = firebaseUser.phoneNumber
+                        if (firebaseUser != null) {
+                            val uid = firebaseUser.uid
+                            val name = firebaseUser.displayName
+                            val email = firebaseUser.email
+                            val photo = firebaseUser.photoUrl
+                            val phoneNumber = firebaseUser.phoneNumber
 
-                        Timber.d("Name: $name, Email: $email, UID: $uid")
-                        val user = User(uid, name, email, photoUrl = photo.toString(), phoneNumber = phoneNumber)
-                        user.isNew = isNewUser
+                            Timber.d("Name: $name, Email: $email, UID: $uid")
+                            val user = User(uid, name, email, photoUrl = photo.toString(), phoneNumber = phoneNumber)
+                            user.isNew = isNewUser
 
-                        authenticatedUserMutableLiveData.value = user
+                            authenticatedUserMutableLiveData.value = user
+                        }
+                    } else {
+                        Timber.d("Error: ${authTask.exception?.message}")
                     }
-                } else {
-                    Timber.d("Error: ${authTask.exception?.message}")
                 }
-            }
         return authenticatedUserMutableLiveData
     }
 
@@ -57,37 +64,39 @@ class AuthRepository {
 
         uidRef.get().addOnSuccessListener {
 
-               if (!it.exists()) {
-                   uidRef.set(user)
-                       .addOnSuccessListener {
-                           authenticatedUser.isCreated = true
-                           newUserMutableLiveData.value = authenticatedUser
-                       }
-                       .addOnFailureListener { exception ->
-                           Timber.e(exception, "Failed To Create user")
-                       }
-               } else { newUserMutableLiveData.value = authenticatedUser }
+            if (!it.exists()) {
+                uidRef.set(user)
+                        .addOnSuccessListener {
+                            authenticatedUser.isCreated = true
+                            newUserMutableLiveData.value = authenticatedUser
+                        }
+                        .addOnFailureListener { exception ->
+                            Timber.e(exception, "Failed To Create user")
+                        }
+            } else {
+                newUserMutableLiveData.value = authenticatedUser
             }
-            .addOnFailureListener { exception ->
-                Timber.e(exception, "Failed To Create user")
         }
+                .addOnFailureListener { exception ->
+                    Timber.e(exception, "Failed To Create user")
+                }
 
         return newUserMutableLiveData
     }
 
     fun checkIfUserIsAuthenticatedInFirebase(): MutableLiveData<User> {
-        val isUserAuthenticateInFirebase = MutableLiveData<User>()
+        val isUserAuthenticatedInFirebase = MutableLiveData<User>()
         val firebaseUser = firebaseAuth.currentUser
 
         if (firebaseUser == null) {
             user.isAuthenticated = false
-            isUserAuthenticateInFirebase.value = user
+            isUserAuthenticatedInFirebase.value = user
         } else {
             user.uid = firebaseUser.uid
             user.isAuthenticated = true
-            isUserAuthenticateInFirebase.value = user
+            isUserAuthenticatedInFirebase.value = user
         }
-        return isUserAuthenticateInFirebase
+        return isUserAuthenticatedInFirebase
     }
 
     fun searchUserInBackend(uid: String): MutableLiveData<User> {
@@ -105,5 +114,30 @@ class AuthRepository {
         }
         return userLiveData
     }
+
+    fun verifyInput(textInputEditText: TextInputEditText) =
+
+            textInputEditText.inputStream()
+                    .debounce(750, TimeUnit.MILLISECONDS)
+                    .filter { it.isNotEmpty() }
+                    .distinctUntilChanged()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
+
+    private fun TextInputEditText.inputStream(): Observable<String> =
+            Observable.create {
+                addTextChangedListener(object : TextWatcher {
+
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                    override fun afterTextChanged(s: Editable?) {
+                        it.onNext(s.toString())
+                    }
+
+                })
+            }
 
 }

@@ -11,7 +11,7 @@ import com.zenger.cookbook.api.RecipeApi
 import com.zenger.cookbook.api.models.RecipeInstruction
 import com.zenger.cookbook.api.models.SuggestionObj
 import com.zenger.cookbook.api.state.Result
-import com.zenger.cookbook.paging.DiscoverPagingSource
+import com.zenger.cookbook.paging.DiscoverMediator
 import com.zenger.cookbook.paging.SearchMediator
 import com.zenger.cookbook.room.RecipeDatabase
 import kotlinx.coroutines.Dispatchers.IO
@@ -29,7 +29,11 @@ class DataRepository(application: Application) {
                     maxSize = 10,
                     enablePlaceholders = false
             ),
-            pagingSourceFactory = { DiscoverPagingSource(api) }
+            remoteMediator = DiscoverMediator(
+                    api = api,
+                    database = database
+            ),
+            pagingSourceFactory = { database.searchDao().viewAll() }
     ).liveData
 
     suspend fun getAutoCompleteSuggestions(query: String) = api.getAutoCompleteSuggestions(query = query)
@@ -47,6 +51,7 @@ class DataRepository(application: Application) {
                     pageSize = 4,
                     prefetchDistance = 1,
                     maxSize = 10,
+                    initialLoadSize = 5,
                     enablePlaceholders = false
             ),
             remoteMediator = SearchMediator(

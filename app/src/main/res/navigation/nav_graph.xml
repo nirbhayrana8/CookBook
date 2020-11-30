@@ -9,13 +9,7 @@
         android:id="@+id/loginHostFragment"
         android:name="com.zenger.cookbook.ui.fragments.LoginHostFragment"
         android:label="fragment_login_host"
-        tools:layout="@layout/fragment_login_host" >
-        <action
-            android:id="@+id/action_loginHostFragment_to_appFlowHostFragment"
-            app:destination="@id/appFlowHostFragment"
-            app:popUpTo="@id/loginHostFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/fragment_login_host" />
     <fragment
         android:id="@+id/appFlowHostFragment"
         android:name="com.zenger.cookbook.ui.fragments.AppFlowHostFragment"
@@ -25,16 +19,5 @@
         android:id="@+id/splashFragment"
         android:name="com.zenger.cookbook.ui.fragments.SplashFragment"
         android:label="SplashFragment"
-        tools:layout="@layout/fragment_splash">
-        <action
-            android:id="@+id/action_splashFragment_to_loginHostFragment"
-            app:destination="@id/loginHostFragment"
-            app:popUpTo="@id/splashFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_splashFragment_to_appFlowHostFragment"
-            app:destination="@id/appFlowHostFragment"
-            app:popUpTo="@id/splashFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/fragment_splash" />
 </navigation>

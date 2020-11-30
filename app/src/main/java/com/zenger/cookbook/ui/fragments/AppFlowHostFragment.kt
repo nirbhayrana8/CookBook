@@ -4,16 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import com.zenger.cookbook.R
 import com.zenger.cookbook.databinding.FragmentAppFlowHostBinding
 
 
 class AppFlowHostFragment : Fragment() {
     private lateinit var navController: NavController
+
     private lateinit var binding: FragmentAppFlowHostBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -27,11 +29,7 @@ class AppFlowHostFragment : Fragment() {
 
     private fun bottomNavInit() {
         binding.bottomNav.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.discover -> navController.navigate(RecipeFragmentDirections.actionRecipeFragmentToDiscoverFragment())
-
-                R.id.saved -> navController.navigate(DiscoverFragmentDirections.actionDiscoverFragmentToRecipeFragment())
-            }
+            navigate(item.itemId)
             true
         }
 
@@ -40,11 +38,24 @@ class AppFlowHostFragment : Fragment() {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun navigate(id: Int) {
 
-        val container = view.findViewById<View>(R.id.app_flow_nav_host_fragment)
-        navController = Navigation.findNavController(container)
+        val host = view?.findViewById<CoordinatorLayout>(R.id.app_start_fragment)
+        if (host != null) {
+            navController = host.findNavController()
+        }
+
+        when (id) {
+
+            R.id.discover -> navController.navigate(
+                    RecipeFragmentDirections.actionRecipeFragmentToDiscoverFragment())
+
+            R.id.saved -> navController.navigate(
+                    DiscoverFragmentDirections.actionDiscoverFragmentToRecipeFragment())
+        }
+
+
     }
+
 
 }

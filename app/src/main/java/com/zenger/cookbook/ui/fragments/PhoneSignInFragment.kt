@@ -2,8 +2,6 @@ package com.zenger.cookbook.ui.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -22,14 +19,12 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import com.zenger.cookbook.R
 import com.zenger.cookbook.databinding.FragmentPhoneSignInBinding
+import com.zenger.cookbook.repository.AuthRepository
 import com.zenger.cookbook.viewmodels.LoginViewModel
 import com.zenger.cookbook.viewmodels.factories.LoginViewModelFactory
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.schedulers.Schedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -37,7 +32,10 @@ class PhoneSignInFragment : Fragment() {
 
     private val factory by lazy { LoginViewModelFactory(requireActivity().application) }
     private val viewModel: LoginViewModel by viewModels { factory }
+
     private lateinit var binding: FragmentPhoneSignInBinding
+
+    private val repo by lazy { AuthRepository() }
     private val disposables = CompositeDisposable()
     private var valid = false
 
@@ -77,18 +75,17 @@ class PhoneSignInFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         activity?.onBackPressedDispatcher?.addCallback {
-            findNavController()
-                    .navigate(PhoneSignInFragmentDirections.actionPhoneSignInFragmentToLoginFragment())
+            findNavController().navigate(R.id.loginFragment)
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_phone_sign_in, container, false)
 
         binding.backButton.setOnClickListener {
-            findNavController().navigate(PhoneSignInFragmentDirections.actionPhoneSignInFragmentToLoginFragment())
+            findNavController().navigate(R.id.loginFragment)
         }
 
         binding.loginPhone.setOnClickListener {
@@ -122,16 +119,9 @@ class PhoneSignInFragment : Fragment() {
 
     private fun verifyPhone() {
 
-        Timber.d("Function Called")
-
         val regex = Regex("^\\d{10}$")
 
-        val observable = binding.phoneEditText.inputStream()
-                .debounce(750, TimeUnit.MILLISECONDS)
-                .filter { it.isNotEmpty() }
-                .distinctUntilChanged()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        val observable = repo.verifyInput(binding.phoneEditText)
 
         observable.subscribe(object : Observer<String> {
 
@@ -156,23 +146,10 @@ class PhoneSignInFragment : Fragment() {
         })
     }
 
-    private fun TextInputEditText.inputStream(): Observable<String> =
-            Observable.create {
-                addTextChangedListener(object : TextWatcher {
-                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-                    override fun afterTextChanged(s: Editable?) {
-                        it.onNext(s.toString())
-                    }
-
-                })
-            }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        disposables.clear()
+        disposables.dispose()
     }
 
 }

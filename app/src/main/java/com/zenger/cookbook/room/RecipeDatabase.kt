@@ -12,7 +12,7 @@ import com.zenger.cookbook.room.tables.SavedRecipeTable
 import com.zenger.cookbook.room.tables.SearchResultsTable
 
 @Database(entities = [SavedRecipeTable::class, SearchResultsTable::class, RemoteKeys::class],
-        version = 2, exportSchema = false)
+        version = 1, exportSchema = false)
 abstract class RecipeDatabase: RoomDatabase() {
 
     abstract fun savedDao(): SavedDao

@@ -27,11 +27,11 @@ class SplashFragment : Fragment() {
         viewModel.isUserAuthenticatedLiveData.observe(viewLifecycleOwner, { user ->
 
             if (!user.isAuthenticated) {
-                findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToLoginHostFragment())
+                findNavController().navigate(R.id.loginHostFragment)
             } else {
                 viewModel.getUserFromDatabase(user.uid)
                 viewModel.userLiveData.observe(viewLifecycleOwner, {
-                    findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToAppFlowHostFragment())
+                    findNavController().navigate(R.id.appFlowHostFragment)
                 })
             }
         })
