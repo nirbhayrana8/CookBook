@@ -1,5 +1,6 @@
 package com.zenger.cookbook.ui.fragments
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.google.android.material.snackbar.Snackbar
 import com.zenger.cookbook.R
 import com.zenger.cookbook.api.state.Result
 import com.zenger.cookbook.databinding.FragmentDetailBinding
@@ -48,9 +50,16 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             toolBar.title = recipe.title
         }
 
-        viewModel.outcome.observe(viewLifecycleOwner) {
-            when (it) {
+        binding.fab.setOnClickListener {
+            if (binding.fab.isChecked)
+                generateSnackBar(getString(R.string.recipe_saved))
+            else
+                generateSnackBar(getString(R.string.recipe_deleted))
+        }
 
+        viewModel.outcome.observe(viewLifecycleOwner) {
+
+            when (it) {
                 is Result.Progress -> {
                     binding.apply {
                         progressBar.isVisible = it.loading
@@ -82,6 +91,14 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 }
             }
         }
+    }
+
+    private fun generateSnackBar(message: String) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
+                .setAction(getString(R.string.undo)) {
+
+                }.setActionTextColor(Color.RED)
+                .show()
     }
 
 }

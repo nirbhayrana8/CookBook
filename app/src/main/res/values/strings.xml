@@ -10,6 +10,9 @@
     <string name="search_api">Search Recipes </string>
     <string name="search_saved">Search your saved recipes</string>
     <string name="no_results">No results found</string>
+    <string name="recipe_saved">Added to saved recipes!</string>
+    <string name="recipe_deleted">Removed from saved recipes!</string>
+    <string name="undo">Undo</string>
 
     <string name="loremIpsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit,
         sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
