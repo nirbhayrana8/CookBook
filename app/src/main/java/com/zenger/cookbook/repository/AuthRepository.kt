@@ -37,7 +37,11 @@ class AuthRepository {
                             val phoneNumber = firebaseUser.phoneNumber
 
                             Timber.d("Name: $name, Email: $email, UID: $uid")
-                            val user = User(uid, name, email, photoUrl = photo.toString(), phoneNumber = phoneNumber)
+                            val user = User(uid = uid,
+                                    name = name,
+                                    email = email,
+                                    photoUrl = photo.toString(),
+                                    phoneNumber = phoneNumber)
                             user.isNew = isNewUser
 
                             authenticatedUserMutableLiveData.value = user
@@ -109,13 +113,13 @@ class AuthRepository {
                 userLiveData.value = user
             } else {
                 Timber.d("User Not found")
-                throw NullPointerException("User not found in backend")
+                throw IllegalAccessException("User not found in backend")
             }
         }
         return userLiveData
     }
 
-    fun verifyInput(textInputEditText: TextInputEditText) =
+    fun verifyInput(textInputEditText: TextInputEditText): Observable<String> =
 
             textInputEditText.inputStream()
                     .debounce(750, TimeUnit.MILLISECONDS)

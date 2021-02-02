@@ -11,7 +11,8 @@ import com.zenger.cookbook.R
 import com.zenger.cookbook.databinding.ListLayoutBinding
 import com.zenger.cookbook.room.tables.SearchResultsTable
 
-class SearchApiAdapter(private val listener: OnItemClickListener) : PagingDataAdapter<SearchResultsTable, SearchApiAdapter.ViewHolder>(DIFF_CALLBACK) {
+class SearchApiAdapter(private val listener: OnItemClickListener) :
+        PagingDataAdapter<SearchResultsTable, SearchApiAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
 

@@ -1,5 +1,6 @@
 package com.zenger.cookbook.ui.fragments
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import androidx.work.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.snackbar.Snackbar
@@ -18,6 +20,8 @@ import com.zenger.cookbook.api.state.Result
 import com.zenger.cookbook.databinding.FragmentDetailBinding
 import com.zenger.cookbook.viewmodels.DetailViewModel
 import com.zenger.cookbook.viewmodels.factories.DetailViewModelFactory
+import com.zenger.cookbook.work.RecipeWorker
+import java.util.concurrent.TimeUnit
 
 class DetailFragment : Fragment(R.layout.fragment_detail) {
 
@@ -94,11 +98,54 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     }
 
     private fun generateSnackBar(message: String) {
+
+        enqueueWork(message)
+
         Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
                 .setAction(getString(R.string.undo)) {
+                    WorkManager.getInstance(requireContext())
+                            .cancelAllWorkByTag("UPDATE_BACKEND")
 
-                }.setActionTextColor(Color.RED)
+                    binding.fab.performClick()
+                }
+                .setActionTextColor(Color.RED)
                 .show()
     }
+
+    private fun enqueueWork(message: String) {
+        val workRequest = generateWorkRequest(message)
+        WorkManager.getInstance(requireContext()).enqueueUniqueWork(
+                "UPDATE_BACKEND",
+                ExistingWorkPolicy.KEEP,
+                workRequest)
+    }
+
+    @SuppressLint("RestrictedApi")
+    private fun generateWorkRequest(message: String): OneTimeWorkRequest {
+        val recipe = args.recipeObject
+
+        val operationType = when (message) {
+            getString(R.string.recipe_saved) -> "ADD"
+            getString(R.string.recipe_deleted) -> "DELETE"
+            else -> ""
+        }
+
+        val data = workDataOf(
+                "operation_type" to operationType,
+                "RecipeId" to recipe.id
+        )
+
+        return OneTimeWorkRequestBuilder<RecipeWorker>()
+                .setInputData(data)
+                .setConstraints(constraintBuilder())
+                .setInitialDelay(3, TimeUnit.SECONDS)
+                .addTag("UPDATE_BACKEND")
+                .build()
+    }
+
+    private fun constraintBuilder() =
+            Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build()
 
 }

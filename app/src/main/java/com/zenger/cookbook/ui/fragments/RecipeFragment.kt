@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
@@ -23,10 +23,10 @@ class RecipeFragment : Fragment(), RecyclerViewAdapter.Interaction {
     private lateinit var binding: FragmentRecipeBinding
     private val adapter = RecyclerViewAdapter(this)
     private val factory by lazy { MyRecipeViewModelFactory(requireActivity().application) }
-    private val viewModel:MyRecipeViewModel by viewModels { factory }
+    private val viewModel: MyRecipeViewModel by navGraphViewModels(R.id.app_flow_nav) { factory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_recipe, container, false)
 

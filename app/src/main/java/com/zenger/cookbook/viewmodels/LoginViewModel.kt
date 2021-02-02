@@ -23,7 +23,6 @@ class LoginViewModel(application: Application) : ViewModel() {
     private val _signInIntent = MutableLiveData<Intent>()
     val signInIntent: MutableLiveData<Intent> = _signInIntent
 
-
     // Google sign in components
     private var gso: GoogleSignInOptions =
         GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

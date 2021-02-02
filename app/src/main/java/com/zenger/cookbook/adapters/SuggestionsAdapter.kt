@@ -10,9 +10,9 @@ import androidx.databinding.DataBindingUtil
 import com.zenger.cookbook.R
 import com.zenger.cookbook.databinding.SuggestionLayoutBinding
 
-class SuggestionsAdapter(private val cntxt: Context,
+class SuggestionsAdapter(cntxt: Context,
                          cursor: Cursor,
-                         flags: Int): CursorAdapter(cntxt, cursor, flags) {
+                         flags: Int) : CursorAdapter(cntxt, cursor, flags) {
 
     private lateinit var binding: SuggestionLayoutBinding
 

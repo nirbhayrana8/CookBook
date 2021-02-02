@@ -3,14 +3,23 @@ package com.zenger.cookbook.room.tables
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "saved_recipes")
-data class SavedRecipeTable(@PrimaryKey(autoGenerate = true)
-                            val id: Long = 0,
+data class SavedRecipeTable(
 
-                            val item_id: Int,
+        @PrimaryKey(autoGenerate = true)
+        @ColumnInfo(name = "id")
+        val id: Long = 0,
 
-                            val title: String,
+        @SerializedName("id")
+        @ColumnInfo(name = "item_id")
+        val itemId: Int,
 
-                            @ColumnInfo(name = "image_url")
-                            val imageUrl: String)
+        @ColumnInfo(name = "image_url")
+        @SerializedName("image")
+        val imageUrl: String,
+
+        @SerializedName("title")
+        val title: String
+)

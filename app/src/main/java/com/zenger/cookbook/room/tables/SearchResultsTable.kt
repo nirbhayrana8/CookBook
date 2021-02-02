@@ -21,5 +21,5 @@ data class SearchResultsTable(
         val imageUrl: String,
 
         @SerializedName("title")
-        val title: String,
+        val title: String
 )

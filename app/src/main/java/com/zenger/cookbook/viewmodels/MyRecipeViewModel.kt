@@ -2,12 +2,12 @@ package com.zenger.cookbook.viewmodels
 
 import android.app.Application
 import android.os.Parcelable
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import com.zenger.cookbook.repository.DataRepository
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 
-class MyRecipeViewModel(application: Application): AndroidViewModel(application) {
+class MyRecipeViewModel(application: Application) : ViewModel() {
 
     private val viewModelJob: CompletableJob = Job()
     private val repository: DataRepository by lazy { DataRepository(application) }
