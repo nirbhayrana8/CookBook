@@ -132,13 +132,15 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
         val data = workDataOf(
                 "operation_type" to operationType,
-                "RecipeId" to recipe.id
+                "RecipeId" to recipe.id,
+                "ImageUrl" to recipe.imageUrl,
+                "Title" to recipe.title
         )
 
         return OneTimeWorkRequestBuilder<RecipeWorker>()
                 .setInputData(data)
                 .setConstraints(constraintBuilder())
-                .setInitialDelay(3, TimeUnit.SECONDS)
+                .setInitialDelay(2, TimeUnit.SECONDS)
                 .addTag("UPDATE_BACKEND")
                 .build()
     }

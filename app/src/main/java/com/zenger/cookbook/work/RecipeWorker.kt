@@ -8,11 +8,16 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.zenger.cookbook.room.RecipeDatabase
+import com.zenger.cookbook.room.tables.SavedRecipeTable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class RecipeWorker(context: Context,
+class RecipeWorker(private val context: Context,
                    workerParameters: WorkerParameters) : CoroutineWorker(context, workerParameters) {
+
+    private val database by lazy { RecipeDatabase.getInstance(context) as RecipeDatabase }
+    private val savedDao by lazy { database.savedDao() }
 
     override suspend fun doWork(): Result {
         var result: Result? = null
@@ -42,8 +47,14 @@ class RecipeWorker(context: Context,
         }
     }
 
-    private fun performAddOrUpdateOperation(docRef: DocumentReference): Result {
+    private suspend fun performAddOrUpdateOperation(docRef: DocumentReference): Result {
         val recipeId = inputData.getInt("RecipeId", 0)
+        val imageUrl = inputData.getString("ImageUrl") ?: ""
+        val title = inputData.getString("Title") ?: ""
+
+        val recipe = SavedRecipeTable(itemId = recipeId, imageUrl = imageUrl, title = title)
+        savedDao.insert(recipe)
+
         val data = hashMapOf("recipes" to recipeId)
 
         var result: Result? = null
@@ -69,8 +80,9 @@ class RecipeWorker(context: Context,
         return result!!
     }
 
-    private fun performDeleteOperation(docRef: DocumentReference): Result {
+    private suspend fun performDeleteOperation(docRef: DocumentReference): Result {
         val recipeId = inputData.getInt("RecipeId", 0)
+        savedDao.delete(recipeId)
 
         var result: Result? = null
 

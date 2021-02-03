@@ -13,7 +13,6 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 class DiscoverViewModel(application: Application) : ViewModel() {
 
@@ -24,10 +23,6 @@ class DiscoverViewModel(application: Application) : ViewModel() {
     val cursor: LiveData<Cursor> get() = _cursor
 
     val randomRecipes = repository.randomRecipes().cachedIn(viewModelScope)
-
-    init {
-        Timber.d("ViewModel Created")
-    }
 
     fun getSuggestions(query: String) {
         viewModelScope.launch(IO) {

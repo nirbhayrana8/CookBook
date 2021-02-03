@@ -13,4 +13,7 @@ interface SavedDao: BaseDao<SavedRecipeTable> {
 
     @Query("DELETE FROM saved_recipes")
     suspend fun clearDB()
+
+    @Query("DELETE FROM saved_recipes WHERE item_id = :recipeId")
+    suspend fun delete(recipeId: Int)
 }

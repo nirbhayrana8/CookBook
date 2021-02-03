@@ -62,6 +62,17 @@ class DataRepository(application: Application) {
             pagingSourceFactory = { database.searchDao().viewAll() }
     ).liveData
 
+    fun viewSavedRecipes() = Pager(
+            config = PagingConfig(
+                    pageSize = 4,
+                    prefetchDistance = 1,
+                    maxSize = 10,
+                    initialLoadSize = 5,
+                    enablePlaceholders = false
+            ),
+            pagingSourceFactory = { database.savedDao().viewAll() }
+    ).liveData
+
     suspend fun getRecipeInstructions(id: Int): LiveData<Result<List<RecipeInstruction>>> =
 
             liveData(IO) {
