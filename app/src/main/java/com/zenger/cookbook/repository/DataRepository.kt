@@ -1,64 +1,92 @@
 package com.zenger.cookbook.repository
 
 import android.app.Application
+import android.database.MatrixCursor
 import androidx.lifecycle.LiveData
-import com.google.gson.JsonObject
+import androidx.lifecycle.liveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.liveData
 import com.zenger.cookbook.api.RecipeApi
+import com.zenger.cookbook.api.models.RecipeInstruction
+import com.zenger.cookbook.api.models.SuggestionObj
+import com.zenger.cookbook.api.state.Result
+import com.zenger.cookbook.paging.DiscoverMediator
+import com.zenger.cookbook.paging.SearchMediator
 import com.zenger.cookbook.room.RecipeDatabase
-import com.zenger.cookbook.room.dao.RecipeDao
-import com.zenger.cookbook.room.dao.SavedDao
-import com.zenger.cookbook.room.tables.RecipeTable
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 
 class DataRepository(application: Application) {
-    private val dao: RecipeDao
-    private val savedDao: SavedDao
 
-    init {
-        val database = RecipeDatabase.getInstance(application) as RecipeDatabase
-        dao = database.recipeDao()
-        savedDao = database.savedDao()
-    }
+    private val database by lazy { RecipeDatabase.getInstance(application) as RecipeDatabase }
+    private val api by lazy { RecipeApi.getApi() }
 
-    fun getRandomRecipes() {
+    fun randomRecipes() = Pager(
+            config = PagingConfig(
+                    pageSize = 4,
+                    prefetchDistance = 1,
+                    maxSize = 10,
+                    enablePlaceholders = false
+            ),
+            remoteMediator = DiscoverMediator(
+                    api = api,
+                    database = database
+            ),
+            pagingSourceFactory = { database.searchDao().viewAll() }
+    ).liveData
 
-        CoroutineScope(IO).launch {
-            val result = RecipeApi.getApi().getRandomRecipe()
-            Timber.d("SomeWhere")
-            parseRandom(result)
+    suspend fun getAutoCompleteSuggestions(query: String) = api.getAutoCompleteSuggestions(query = query)
+
+    fun convertSuggestionToCursor(suggestions: List<SuggestionObj>): MatrixCursor {
+        val cursor = MatrixCursor(arrayOf("_id", "title"))
+        suggestions.map { suggestion ->
+            cursor.addRow(arrayOf(suggestion.id, suggestion.title))
         }
+        return cursor
     }
 
-    fun getRecipes(): LiveData<List<RecipeTable>> {
-        Timber.d("getRecipes Called")
-        return dao.viewAll()
-    }
+    fun searchRecipeByName(query: String) = Pager(
+            config = PagingConfig(
+                    pageSize = 4,
+                    prefetchDistance = 1,
+                    maxSize = 10,
+                    initialLoadSize = 5,
+                    enablePlaceholders = false
+            ),
+            remoteMediator = SearchMediator(
+                    api = api,
+                    database = database,
+                    query = query
+            ),
+            pagingSourceFactory = { database.searchDao().viewAll() }
+    ).liveData
 
-    private suspend fun parseRandom(json: JsonObject) {
+    fun viewSavedRecipes() = Pager(
+            config = PagingConfig(
+                    pageSize = 4,
+                    prefetchDistance = 1,
+                    maxSize = 10,
+                    initialLoadSize = 5,
+                    enablePlaceholders = false
+            ),
+            pagingSourceFactory = { database.savedDao().viewAll() }
+    ).liveData
 
-        val recipes = json.getAsJsonArray("recipes")
+    suspend fun getRecipeInstructions(id: Int): LiveData<Result<List<RecipeInstruction>>> =
 
-        Timber.d(recipes.size().toString())
-        for (item in recipes) {
+            liveData(IO) {
+                emit(Result.loading<List<RecipeInstruction>>(true))
 
-            val recipe = item as JsonObject
-            val id = recipe.get("id").asInt
-            val title = recipe.get("title").asString
-            val image = recipe.get("image").asString
-            val sourceUrl: String? = recipe.get("sourceUrl").asString
-            val result = RecipeTable(id, title, image, sourceUrl)
-            Timber.d(result.toString())
-            insertToDb(result)
-        }
-    }
+                try {
+                    val response = api.getRecipeInstructions(id = id)
+                    emit(Result.success(response))
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    emit(Result.failure<List<RecipeInstruction>>(e))
+                }
 
-    private suspend fun insertToDb(recipeTable: RecipeTable) {
-        dao.insert(recipeTable)
-        Timber.d("Insert Successful")
-    }
+            }
+
 }
 

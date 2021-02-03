@@ -1,37 +1,41 @@
 package com.zenger.cookbook.viewmodels
 
 import android.app.Application
+import android.database.Cursor
 import android.os.Parcelable
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.zenger.cookbook.repository.DataRepository
-import com.zenger.cookbook.room.tables.RecipeTable
-import kotlinx.coroutines.CompletableJob
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
-import timber.log.Timber
+import kotlinx.coroutines.withContext
 
-class DiscoverViewModel(application: Application): AndroidViewModel(application) {
-    private val viewModelJob: CompletableJob = Job()
+class DiscoverViewModel(application: Application) : ViewModel() {
+
     private val repository: DataRepository by lazy { DataRepository(application) }
-    val recipes: LiveData<List<RecipeTable>> by lazy { repository.getRecipes() }
     var listState: Parcelable? = null
 
-    init {
+    private val _cursor by lazy { MutableLiveData<Cursor>() }
+    val cursor: LiveData<Cursor> get() = _cursor
 
-        CoroutineScope(IO + viewModelJob).launch {
-             repository.getRandomRecipes()
-           recipes()
-            Timber.d(" Recipes: ${recipes.value.toString()}")
+    val randomRecipes = repository.randomRecipes().cachedIn(viewModelScope)
+
+    fun getSuggestions(query: String) {
+        viewModelScope.launch(IO) {
+            try {
+                val response = repository.getAutoCompleteSuggestions(query)
+                withContext(Main) {
+                    _cursor.value = repository.convertSuggestionToCursor(response)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
+        }
     }
 
-    private fun recipes(): LiveData<List<RecipeTable>> = recipes
 
-    override fun onCleared() {
-        super.onCleared()
-        viewModelJob.complete()
-    }
 }

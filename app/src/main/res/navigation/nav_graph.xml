@@ -3,39 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/discoverFragment">
+    app:startDestination="@id/splashFragment">
+
     <fragment
-        android:id="@+id/discoverFragment"
-        android:name="com.zenger.cookbook.ui.fragments.DiscoverFragment"
-        android:label="DiscoverFragment"
-        tools:layout="@layout/fragment_discover">
-        <action
-            android:id="@+id/action_discoverFragment_to_recipeFragment"
-            app:destination="@id/recipeFragment" />
-        <action
-            android:id="@+id/action_discoverFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
-    </fragment>
+        android:id="@+id/loginHostFragment"
+        android:name="com.zenger.cookbook.ui.fragments.LoginHostFragment"
+        android:label="fragment_login_host"
+        tools:layout="@layout/fragment_login_host" />
     <fragment
-        android:id="@+id/recipeFragment"
-        android:name="com.zenger.cookbook.ui.fragments.RecipeFragment"
-        android:label="fragment_recipe"
-        tools:layout="@layout/fragment_recipe" >
-        <action
-            android:id="@+id/action_recipeFragment_to_discoverFragment"
-            app:destination="@id/discoverFragment" />
-        <action
-            android:id="@+id/action_recipeFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
-    </fragment>
+        android:id="@+id/appFlowHostFragment"
+        android:name="com.zenger.cookbook.ui.fragments.AppFlowHostFragment"
+        android:label="fragment_app_flow_host"
+        tools:layout="@layout/fragment_app_flow_host" />
     <fragment
-        android:id="@+id/detailFragment"
-        android:name="com.zenger.cookbook.ui.fragments.DetailFragment"
-        android:label="DetailFragment"
-        tools:layout="@layout/fragment_detail">
-        <argument
-            android:name="sourceUrl"
-            app:argType="string"
-            app:nullable="true" />
-    </fragment>
+        android:id="@+id/splashFragment"
+        android:name="com.zenger.cookbook.ui.fragments.SplashFragment"
+        android:label="SplashFragment"
+        tools:layout="@layout/fragment_splash" />
 </navigation>

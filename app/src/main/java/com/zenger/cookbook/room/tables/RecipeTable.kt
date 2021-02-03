@@ -1,26 +1,31 @@
 package com.zenger.cookbook.room.tables
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 @Entity(tableName = "recipe_table")
-data class RecipeTable (@PrimaryKey
-                  @SerializedName("id")
-                  @Expose
-                  val id: Int,
+data class RecipeTable(
 
-                  @SerializedName("title")
-                  @Expose
-                  val title: String,
+        @PrimaryKey
+        @SerializedName("id")
+        @Expose
+        val id: Int,
 
-                  @SerializedName("image")
-                  @Expose
-                  @ColumnInfo(name = "image_url")
-                  val imageUrl: String,
+        @SerializedName("title")
+        @Expose
+        val title: String,
 
-                  @SerializedName("sourceUrl")
-                  @Expose
-                  val sourceUrl: String?)
+        @SerializedName("image")
+        @Expose
+        @ColumnInfo(name = "image_url")
+        val imageUrl: String,
+
+        @SerializedName("sourceUrl")
+        @Expose
+        val sourceUrl: String?) : Parcelable
