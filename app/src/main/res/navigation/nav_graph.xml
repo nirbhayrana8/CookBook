@@ -6,11 +6,6 @@
     app:startDestination="@id/splashFragment">
 
     <fragment
-        android:id="@+id/loginHostFragment"
-        android:name="com.zenger.cookbook.ui.fragments.LoginHostFragment"
-        android:label="fragment_login_host"
-        tools:layout="@layout/fragment_login_host" />
-    <fragment
         android:id="@+id/appFlowHostFragment"
         android:name="com.zenger.cookbook.ui.fragments.AppFlowHostFragment"
         android:label="fragment_app_flow_host"
