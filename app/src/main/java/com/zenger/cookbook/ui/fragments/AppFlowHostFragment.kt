@@ -47,11 +47,9 @@ class AppFlowHostFragment : Fragment() {
 
         when (id) {
 
-            R.id.discover -> navController.navigate(
-                    RecipeFragmentDirections.actionRecipeFragmentToDiscoverFragment())
+            R.id.discover -> navController.navigate(R.id.discoverFragment)
 
-            R.id.saved -> navController.navigate(
-                    DiscoverFragmentDirections.actionDiscoverFragmentToRecipeFragment())
+            R.id.saved -> navController.navigate(R.id.recipeFragment)
         }
 
 
