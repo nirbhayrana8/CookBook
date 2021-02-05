@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.zenger.cookbook.R
 import com.zenger.cookbook.adapters.LoadStateAdapter
 import com.zenger.cookbook.adapters.SearchApiAdapter
-import com.zenger.cookbook.api.models.Recipe
+import com.zenger.cookbook.api.models.BaseRecipe
 import com.zenger.cookbook.databinding.FragmentSearchApiBinding
 import com.zenger.cookbook.room.tables.SearchResultsTable
 import com.zenger.cookbook.viewmodels.SearchApiViewModel
@@ -54,7 +54,7 @@ class SearchApiFragment : Fragment(R.layout.fragment_search_api), SearchApiAdapt
 
     override fun onItemClick(searchResults: SearchResultsTable) {
 
-        val recipe = Recipe(id = searchResults.itemId, title = searchResults.title, imageUrl = searchResults.imageUrl)
+        val recipe = BaseRecipe(id = searchResults.itemId, title = searchResults.title, imageUrl = searchResults.imageUrl)
         val action = SearchApiFragmentDirections.actionSearchApiFragmentToDetailFragment(recipe)
 
         findNavController().navigate(action)

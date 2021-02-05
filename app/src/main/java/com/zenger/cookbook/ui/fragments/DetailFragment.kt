@@ -39,7 +39,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val recipe = args.recipeObject
+        val recipe = args.recipe
 
         viewModel.checkIfRecipeSavedByUser(recipe.id)
         viewModel.getRecipeInstructions(recipe.id)
@@ -89,7 +89,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     @SuppressLint("RestrictedApi")
     private fun generateWorkRequest(message: String): OneTimeWorkRequest {
-        val recipe = args.recipeObject
+        val recipe = args.recipe
 
         val operationType = when (message) {
             getString(R.string.recipe_saved) -> "ADD"

@@ -37,8 +37,8 @@
         android:label="DetailFragment"
         tools:layout="@layout/fragment_detail">
         <argument
-            android:name="recipeObject"
-            app:argType="com.zenger.cookbook.api.models.Recipe" />
+            android:name="recipe"
+            app:argType="com.zenger.cookbook.api.models.BaseRecipe" />
     </fragment>
     <fragment
         android:id="@+id/searchApiFragment"

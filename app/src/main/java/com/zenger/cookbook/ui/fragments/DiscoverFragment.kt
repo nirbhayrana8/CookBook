@@ -16,7 +16,7 @@ import com.zenger.cookbook.R
 import com.zenger.cookbook.adapters.LoadStateAdapter
 import com.zenger.cookbook.adapters.SearchApiAdapter
 import com.zenger.cookbook.adapters.SuggestionsAdapter
-import com.zenger.cookbook.api.models.Recipe
+import com.zenger.cookbook.api.models.BaseRecipe
 import com.zenger.cookbook.databinding.FragmentDiscoverBinding
 import com.zenger.cookbook.room.tables.SearchResultsTable
 import com.zenger.cookbook.viewmodels.DiscoverViewModel
@@ -150,7 +150,7 @@ class DiscoverFragment : Fragment(), SearchApiAdapter.OnItemClickListener {
 
     override fun onItemClick(searchResults: SearchResultsTable) {
 
-        val item = Recipe(id = searchResults.itemId, title = searchResults.title, imageUrl = searchResults.imageUrl)
+        val item = BaseRecipe(id = searchResults.itemId, title = searchResults.title, imageUrl = searchResults.imageUrl)
         val action = DiscoverFragmentDirections.actionDiscoverFragmentToDetailFragment(item)
 
         findNavController().navigate(action)
