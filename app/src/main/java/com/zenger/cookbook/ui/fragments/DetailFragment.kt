@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
 import androidx.work.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit
 class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     private val factory by lazy { DetailViewModelFactory(requireActivity().application) }
-    private val viewModel by viewModels<DetailViewModel> { factory }
+    private val viewModel: DetailViewModel by navGraphViewModels(R.id.app_flow_nav) { factory }
 
     private val args by navArgs<DetailFragmentArgs>()
     private lateinit var binding: FragmentDetailBinding
@@ -41,6 +41,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
         val recipe = args.recipeObject
 
+        viewModel.checkIfRecipeSavedByUser(recipe.id)
         viewModel.getRecipeInstructions(recipe.id)
 
         binding.apply {
@@ -60,41 +61,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             else
                 generateSnackBar(getString(R.string.recipe_deleted))
         }
-
-        viewModel.outcome.observe(viewLifecycleOwner) {
-
-            when (it) {
-                is Result.Progress -> {
-                    binding.apply {
-                        progressBar.isVisible = it.loading
-                        container.isVisible = !(it.loading)
-                    }
-                }
-
-                is Result.Success -> {
-                    binding.apply {
-                        progressBar.isVisible = false
-                        container.isVisible = true
-                    }
-                    viewModel.apply {
-                        steps.observe(viewLifecycleOwner) { step ->
-                            binding.stepsTextView.text = step
-                        }
-                        ingredients.observe(viewLifecycleOwner) { ingredient ->
-                            binding.ingredientsTextView.text = ingredient
-                        }
-                    }
-                    viewModel.parseInstructions(it.data)
-                }
-
-                is Result.Failure -> {
-                    binding.apply {
-                        textViewError.isVisible = true
-                        progressBar.isVisible = false
-                    }
-                }
-            }
-        }
+        setObservers()
     }
 
     private fun generateSnackBar(message: String) {
@@ -149,5 +116,51 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)
                     .build()
+
+    private fun setObservers() {
+
+        viewModel.apply {
+            outcome.observe(viewLifecycleOwner) {
+
+                when (it) {
+                    is Result.Progress -> {
+                        binding.apply {
+                            progressBar.isVisible = it.loading
+                            container.isVisible = !(it.loading)
+                        }
+                    }
+
+                    is Result.Success -> {
+                        binding.apply {
+                            progressBar.isVisible = false
+                            container.isVisible = true
+                        }
+                        viewModel.apply {
+                            steps.observe(viewLifecycleOwner) { step ->
+                                binding.stepsTextView.text = step
+                            }
+                            ingredients.observe(viewLifecycleOwner) { ingredient ->
+                                binding.ingredientsTextView.text = ingredient
+                            }
+                        }
+                        viewModel.parseInstructions(it.data)
+                    }
+
+                    is Result.Failure -> {
+                        binding.apply {
+                            textViewError.isVisible = true
+                            progressBar.isVisible = false
+                        }
+                    }
+                }
+            }
+
+            saveStatus.observe(viewLifecycleOwner) { status ->
+                status?.let {
+                    binding.fab.isChecked = it
+                }
+            }
+        }
+    }
 
 }

@@ -88,5 +88,10 @@ class DataRepository(application: Application) {
 
             }
 
+    suspend fun checkIfRecipeIsSaved(recipeId: Int): Boolean {
+        val dao = database.savedDao()
+        return dao.hasRecipe(recipeId)
+    }
+
 }
 

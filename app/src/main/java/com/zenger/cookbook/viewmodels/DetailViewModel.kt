@@ -9,7 +9,9 @@ import com.zenger.cookbook.api.models.RecipeInstruction
 import com.zenger.cookbook.api.state.Result
 import com.zenger.cookbook.repository.DataRepository
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class DetailViewModel(application: Application) : ViewModel() {
@@ -22,6 +24,9 @@ class DetailViewModel(application: Application) : ViewModel() {
 
     private val _steps by lazy { MutableLiveData<String>() }
     val steps: LiveData<String> = _steps
+
+    private val _saveStatus by lazy { MutableLiveData(false) }
+    val saveStatus: LiveData<Boolean> = _saveStatus
 
     private var step: String = ""
     private var ingredient: String = ""
@@ -57,5 +62,13 @@ class DetailViewModel(application: Application) : ViewModel() {
         return value
     }
 
+    fun checkIfRecipeSavedByUser(recipeId: Int) {
+        viewModelScope.launch(IO) {
+            val value = repository.checkIfRecipeIsSaved(recipeId)
+            withContext(Main) {
+                _saveStatus.value = value
+            }
+        }
+    }
 
 }

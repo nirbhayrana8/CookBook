@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import com.google.android.material.appbar.MaterialToolbar
 import com.zenger.cookbook.R
 import com.zenger.cookbook.adapters.LoadStateAdapter
 import com.zenger.cookbook.adapters.SavedRecipesAdapter
@@ -24,6 +26,14 @@ class RecipeFragment : Fragment(R.layout.fragment_recipe), SavedRecipesAdapter.O
     private val factory by lazy { MyRecipeViewModelFactory(requireActivity().application) }
     private val viewModel: MyRecipeViewModel by navGraphViewModels(R.id.app_flow_nav) { factory }
     private lateinit var binding: FragmentRecipeBinding
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val layout = binding.toolBar
+        val toolbar = layout.findViewById<MaterialToolbar>(R.id.toolBar)
+        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_recipe, container, false)

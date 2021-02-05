@@ -29,7 +29,8 @@
                     android:layout_height="wrap_content"
                     android:fitsSystemWindows="true"
                     app:contentScrim="@color/colorPrimary"
-                    app:expandedTitleTextAppearance="@style/CollapsingTextStyle"
+                    app:collapsedTitleTextAppearance="@style/CollapsedText"
+                    app:expandedTitleTextAppearance="@style/ExpandedTextStyle"
                     app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                     <ImageView
@@ -39,6 +40,13 @@
                         android:contentDescription="@string/recipe_image"
                         app:layout_collapseMode="parallax"
                         app:layout_collapseParallaxMultiplier="0.7" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_gravity="bottom"
+                        android:background="@drawable/list_gradient"
+                        app:layout_collapseMode="parallax" />
 
                     <com.google.android.material.appbar.MaterialToolbar
                         android:id="@+id/toolBar"

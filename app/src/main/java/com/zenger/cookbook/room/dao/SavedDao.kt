@@ -17,4 +17,7 @@ interface SavedDao: BaseDao<SavedRecipeTable> {
 
     @Query("DELETE FROM saved_recipes WHERE item_id = :recipeId")
     suspend fun delete(recipeId: Int)
+
+    @Query("SELECT EXISTS(SELECT * FROM saved_recipes WHERE item_id = :recipeId)")
+    suspend fun hasRecipe(recipeId: Int): Boolean
 }

@@ -42,7 +42,12 @@
         <item name="android:background">?android:attr/listDivider</item>
     </style>
 
-    <style name="CollapsingTextStyle" parent="@style/TextAppearance.Design.CollapsingToolbar.Expanded">
+    <style name="ExpandedTextStyle" parent="@style/TextAppearance.Design.CollapsingToolbar.Expanded">
+        <item name="android:textSize">25sp</item>
+        <item name="android:textColor">@color/active_tab_color</item>
+    </style>
+
+    <style name="CollapsedText" parent="TextAppearance.AppCompat.Title">
         <item name="android:textColor">@color/active_tab_color</item>
     </style>
 
