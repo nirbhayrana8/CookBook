@@ -24,7 +24,8 @@ class AppFlowHostFragment : Fragment() {
         super.onCreate(savedInstanceState)
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                val navHostFragment = childFragmentManager.findFragmentById(R.id.app_flow_nav_host_fragment) as NavHostFragment?
+                val navHostFragment = childFragmentManager
+                        .findFragmentById(R.id.app_flow_nav_host_fragment) as NavHostFragment?
                 navHostFragment?.navController?.navigateUp()
             }
         })

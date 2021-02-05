@@ -7,5 +7,5 @@ data class SearchResponse(
         val number: Int?,
 
         @Expose
-        val results: List<SearchObj>
+        val results: List<BaseRecipe>
 )
