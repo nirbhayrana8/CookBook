@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.zenger.cookbook.R
 import com.zenger.cookbook.databinding.FragmentAppFlowHostBinding
 
@@ -17,6 +19,16 @@ class AppFlowHostFragment : Fragment() {
     private lateinit var navController: NavController
 
     private lateinit var binding: FragmentAppFlowHostBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val navHostFragment = childFragmentManager.findFragmentById(R.id.app_flow_nav_host_fragment) as NavHostFragment?
+                navHostFragment?.navController?.navigateUp()
+            }
+        })
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
