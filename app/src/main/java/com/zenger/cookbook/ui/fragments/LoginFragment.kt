@@ -157,6 +157,7 @@ class LoginFragment : Fragment() {
                 }
             } else {
                 Timber.d("Old User")
+                loginViewModel.saveUserDataOnDevice()
                 goToMainAppFlow()
             }
         })

@@ -34,7 +34,7 @@ class OtpFragment : Fragment() {
     private val verificationCode: String by lazy { OtpFragmentArgs.fromBundle(requireArguments()).verificationCode }
     private var validOtp = false
 
-    private val repo by lazy { AuthRepository() }
+    private val repo by lazy { AuthRepository(requireActivity().application) }
     private val disposables = CompositeDisposable()
 
     private val mainNavController by lazy { activity?.findNavController(R.id.main_nav_host_fragment) }
@@ -85,12 +85,13 @@ class OtpFragment : Fragment() {
                     viewModel.createdUserLiveData.observe(viewLifecycleOwner, {
 
                         if (it.isCreated) {
-                            Snackbar.make(binding.container , "User Created", Snackbar.LENGTH_LONG).show()
+                            Snackbar.make(binding.container, "User Created", Snackbar.LENGTH_LONG).show()
                         }
                         goToMainAppFlow()
                     })
                 } else {
                     Timber.d("Old User")
+                    viewModel.saveUserDataOnDevice()
                     goToMainAppFlow()
                 }
             })

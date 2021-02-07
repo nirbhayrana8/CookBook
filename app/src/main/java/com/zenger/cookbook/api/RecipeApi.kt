@@ -1,10 +1,7 @@
 package com.zenger.cookbook.api
 
 import com.google.gson.GsonBuilder
-import com.zenger.cookbook.api.models.RandomResponse
-import com.zenger.cookbook.api.models.RecipeInstruction
-import com.zenger.cookbook.api.models.SearchResponse
-import com.zenger.cookbook.api.models.SuggestionObj
+import com.zenger.cookbook.api.models.*
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -37,6 +34,11 @@ interface RecipeApi {
     @GET("{id}/analyzedInstructions")
     suspend fun getRecipeInstructions(@Path("id") id: Int,
                                       @Query("apiKey") key: String = API_KEY): List<RecipeInstruction>
+
+    @GET("{id}/information")
+    suspend fun getRecipeInformation(@Path("id") id: Int,
+                                     @Query("apiKey") key: String = API_KEY,
+                                     @Query("includeNutrition") nutrition: Boolean = false): BaseRecipe
 
     companion object {
 

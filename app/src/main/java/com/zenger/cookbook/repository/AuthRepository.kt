@@ -1,27 +1,36 @@
 package com.zenger.cookbook.repository
 
+import android.app.Application
 import android.text.Editable
 import android.text.TextWatcher
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.room.withTransaction
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.zenger.cookbook.api.RecipeApi
+import com.zenger.cookbook.room.RecipeDatabase
+import com.zenger.cookbook.room.tables.SavedRecipeTable
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-class AuthRepository {
+class AuthRepository(application: Application) {
 
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val database = Firebase.firestore
+    private val deviceDatabase by lazy { RecipeDatabase.getInstance(application) as RecipeDatabase }
 
     private val user by lazy { User() }
 
-    fun firebaseAuthWithCredentials(authCredentials: AuthCredential): MutableLiveData<User> {
+    fun firebaseAuthWithCredentials(authCredentials: AuthCredential): LiveData<User> {
         val authenticatedUserMutableLiveData = MutableLiveData<User>()
         firebaseAuth.signInWithCredential(authCredentials)
                 .addOnCompleteListener { authTask ->
@@ -41,8 +50,8 @@ class AuthRepository {
                                     name = name,
                                     email = email,
                                     photoUrl = photo.toString(),
-                                    phoneNumber = phoneNumber)
-                            user.isNew = isNewUser
+                                    phoneNumber = phoneNumber,
+                                    isNew = isNewUser)
 
                             authenticatedUserMutableLiveData.value = user
                         }
@@ -54,7 +63,7 @@ class AuthRepository {
     }
 
 
-    fun createUserInFireStoreIfNotExists(authenticatedUser: User): MutableLiveData<User> {
+    fun createUserInFireStoreIfNotExists(authenticatedUser: User): LiveData<User> {
         val newUserMutableLiveData = MutableLiveData<User>()
 
         val user = hashMapOf(
@@ -117,6 +126,51 @@ class AuthRepository {
             }
         }
         return userLiveData
+    }
+
+    suspend fun getUserData() {
+        val user = firebaseAuth.currentUser
+        if (user != null) {
+            val uid = user.uid
+            val uidRef = database.collection("users").document(uid)
+                    .collection("user_data").document("saved_recipes")
+
+            val docSnap: DocumentSnapshot = try {
+                uidRef.get().await()
+            } catch (e: Exception) {
+                throw IllegalStateException(e)
+            }
+
+            if (docSnap.exists()) {
+                val data = docSnap.data
+                if (data != null) {
+                    val recipes: ArrayList<Int> = data["recipes"] as ArrayList<Int>
+                    saveUserDataOnDevice(recipes)
+                }
+            }
+        }
+    }
+
+    private suspend fun saveUserDataOnDevice(recipes: ArrayList<Int>) {
+
+        recipes.forEach { recipeId ->
+
+            val recipe = try {
+                RecipeApi.getApi().getRecipeInformation(recipeId)
+            } catch (e: Exception) {
+                Timber.e(e, "Exception Thrown")
+                throw e
+            }
+            val savedRecipe = SavedRecipeTable(
+                    itemId = recipe.id,
+                    imageUrl = recipe.imageUrl,
+                    title = recipe.title)
+            Timber.d(savedRecipe.toString())
+
+            deviceDatabase.withTransaction {
+                deviceDatabase.savedDao().insert(savedRecipe)
+            }
+        }
     }
 
     fun verifyInput(textInputEditText: TextInputEditText): Observable<String> =

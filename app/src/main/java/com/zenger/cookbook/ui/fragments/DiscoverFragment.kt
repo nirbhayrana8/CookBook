@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.appbar.MaterialToolbar
@@ -69,6 +70,14 @@ class DiscoverFragment : Fragment(), SearchApiAdapter.OnItemClickListener {
         (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
 
         setHasOptionsMenu(true)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.settings) {
+            val mainNavController by lazy { activity?.findNavController(R.id.main_nav_host_fragment) }
+            mainNavController?.navigate(R.id.action_global_settingsFragment)
+        }
+        return true
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

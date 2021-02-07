@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -12,10 +13,12 @@ import com.google.firebase.auth.AuthCredential
 import com.zenger.cookbook.R
 import com.zenger.cookbook.repository.AuthRepository
 import com.zenger.cookbook.repository.User
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 
 class LoginViewModel(application: Application) : ViewModel() {
 
-    private val authRepository by lazy { AuthRepository() }
+    private val authRepository by lazy { AuthRepository(application) }
 
     lateinit var authenticatedUserData: LiveData<User>
     lateinit var createdUserLiveData: LiveData<User>
@@ -46,6 +49,10 @@ class LoginViewModel(application: Application) : ViewModel() {
         createdUserLiveData = authRepository.createUserInFireStoreIfNotExists(authenticatedUser)
     }
 
-
+    fun saveUserDataOnDevice() {
+        viewModelScope.launch(IO) {
+            authRepository.getUserData()
+        }
+    }
 
 }

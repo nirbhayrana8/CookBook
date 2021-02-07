@@ -1,13 +1,14 @@
 package com.zenger.cookbook.viewmodels
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.zenger.cookbook.repository.AuthRepository
 import com.zenger.cookbook.repository.User
 
-class SplashViewModel: ViewModel() {
+class SplashViewModel(application: Application) : ViewModel() {
 
-    private val repository by lazy { AuthRepository() }
+    private val repository by lazy { AuthRepository(application) }
     lateinit var isUserAuthenticatedLiveData: LiveData<User>
     lateinit var userLiveData: LiveData<User>
 

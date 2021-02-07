@@ -27,9 +27,12 @@
         android:id="@+id/otpFragment"
         android:name="com.zenger.cookbook.ui.fragments.OtpFragment"
         android:label="fragment_otp"
-        tools:layout="@layout/fragment_otp" >
+        tools:layout="@layout/fragment_otp">
         <argument
             android:name="verificationCode"
             app:argType="string" />
     </fragment>
+    <action
+        android:id="@+id/action_global_loginFragment"
+        app:destination="@id/loginFragment" />
 </navigation>

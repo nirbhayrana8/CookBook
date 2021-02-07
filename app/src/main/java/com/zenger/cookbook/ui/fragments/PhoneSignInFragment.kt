@@ -35,7 +35,7 @@ class PhoneSignInFragment : Fragment() {
 
     private lateinit var binding: FragmentPhoneSignInBinding
 
-    private val repo by lazy { AuthRepository() }
+    private val repo by lazy { AuthRepository(requireActivity().application) }
     private val disposables = CompositeDisposable()
     private var valid = false
 

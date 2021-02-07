@@ -16,7 +16,7 @@ import com.zenger.cookbook.paging.SearchMediator
 import com.zenger.cookbook.room.RecipeDatabase
 import kotlinx.coroutines.Dispatchers.IO
 
-
+@OptIn(androidx.paging.ExperimentalPagingApi::class)
 class DataRepository(application: Application) {
 
     private val database by lazy { RecipeDatabase.getInstance(application) as RecipeDatabase }

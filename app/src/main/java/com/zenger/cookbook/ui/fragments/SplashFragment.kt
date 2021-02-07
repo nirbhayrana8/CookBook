@@ -9,10 +9,12 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.zenger.cookbook.R
 import com.zenger.cookbook.viewmodels.SplashViewModel
+import com.zenger.cookbook.viewmodels.factories.SplashViewModelFactory
 
 class SplashFragment : Fragment() {
 
-    private val viewModel: SplashViewModel by viewModels()
+    private val factory by lazy { SplashViewModelFactory(requireActivity().application) }
+    private val viewModel: SplashViewModel by viewModels { factory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
