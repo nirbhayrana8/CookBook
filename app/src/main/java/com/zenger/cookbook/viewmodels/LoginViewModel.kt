@@ -12,7 +12,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.AuthCredential
 import com.zenger.cookbook.R
 import com.zenger.cookbook.repository.AuthRepository
-import com.zenger.cookbook.repository.User
+import com.zenger.cookbook.repository.models.User
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 

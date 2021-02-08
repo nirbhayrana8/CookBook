@@ -1,4 +1,4 @@
-package com.zenger.cookbook.repository
+package com.zenger.cookbook.repository.models
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

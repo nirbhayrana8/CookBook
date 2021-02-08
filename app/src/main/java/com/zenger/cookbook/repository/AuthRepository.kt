@@ -11,8 +11,12 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.zenger.cookbook.api.RecipeApi
+import com.zenger.cookbook.repository.models.FireBaseAuthUserState
+import com.zenger.cookbook.repository.models.User
+import com.zenger.cookbook.repository.models.newFireBaseAuthStateLiveData
 import com.zenger.cookbook.room.RecipeDatabase
 import com.zenger.cookbook.room.tables.SavedRecipeTable
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -21,6 +25,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.CoroutineContext
 
 class AuthRepository(application: Application) {
 
@@ -29,6 +34,10 @@ class AuthRepository(application: Application) {
     private val deviceDatabase by lazy { RecipeDatabase.getInstance(application) as RecipeDatabase }
 
     private val user by lazy { User() }
+
+    fun getAuthStateLiveData(auth: FirebaseAuth, context: CoroutineContext): LiveData<FireBaseAuthUserState> {
+        return auth.newFireBaseAuthStateLiveData(context)
+    }
 
     fun firebaseAuthWithCredentials(authCredentials: AuthCredential): LiveData<User> {
         val authenticatedUserMutableLiveData = MutableLiveData<User>()
@@ -102,9 +111,11 @@ class AuthRepository(application: Application) {
         val firebaseUser = firebaseAuth.currentUser
 
         if (firebaseUser == null) {
+            Timber.d("firebase user null")
             user.isAuthenticated = false
             isUserAuthenticatedInFirebase.value = user
         } else {
+            Timber.d("firebase user not null uid: ${firebaseUser.uid}")
             user.uid = firebaseUser.uid
             user.isAuthenticated = true
             isUserAuthenticatedInFirebase.value = user
@@ -116,15 +127,19 @@ class AuthRepository(application: Application) {
         val userLiveData = MutableLiveData<User>()
         val uidRef = database.collection("users").document(uid)
 
-        uidRef.get().addOnSuccessListener {
-            if (it.exists()) {
-                val user = it.toObject(User::class.java)
-                userLiveData.value = user
-            } else {
-                Timber.d("User Not found")
-                throw IllegalAccessException("User not found in backend")
-            }
-        }
+        uidRef.get()
+                .addOnSuccessListener {
+                    if (it.exists()) {
+                        val user = it.toObject<User>()
+                        userLiveData.value = user
+                    } else {
+                        Timber.d("User Not found")
+                        throw IllegalAccessException("User not found in backend")
+                    }
+                }
+                .addOnFailureListener {
+                    Timber.d("failure in background search")
+                }
         return userLiveData
     }
 
