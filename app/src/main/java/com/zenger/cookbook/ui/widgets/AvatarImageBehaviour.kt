@@ -53,6 +53,7 @@ class AvatarImageBehaviour(context: Context, attributeSet: AttributeSet?) : Coor
 
             val heightToSubtract = (mStartHeight - mCustomStartHeight) * heightFactor
 
+
             val layoutParams = child.layoutParams as CoordinatorLayout.LayoutParams
             layoutParams.width = (mStartHeight - heightToSubtract).toInt()
             layoutParams.height = (mStartHeight - heightToSubtract).toInt()

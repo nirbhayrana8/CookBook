@@ -13,6 +13,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.zenger.cookbook.R
 import com.zenger.cookbook.databinding.FragmentAppFlowHostBinding
+import timber.log.Timber
 
 
 class AppFlowHostFragment : Fragment() {
@@ -28,8 +29,10 @@ class AppFlowHostFragment : Fragment() {
                     .findFragmentById(R.id.app_flow_nav_host_fragment) as NavHostFragment?
             navHostFragment?.navController?.navigateUp()
 
+            val backStackId = navHostFragment?.navController?.currentBackStackEntry?.destination?.id
             binding.bottomNav.apply {
-                selectedItemId = if (selectedItemId == R.id.discover) R.id.saved else R.id.discover
+                selectedItemId = if (backStackId == R.id.discoverFragment) R.id.discover else R.id.saved
+                Timber.d("current selectedItemId: $selectedItemId")
 
             }
         }

@@ -6,12 +6,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
+import androidx.navigation.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.zenger.cookbook.R
 
 class SettingsFragment : PreferenceFragmentCompat() {
+
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            activity?.findNavController(R.id.main_nav_host_fragment)?.navigateUp()
+        }
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
@@ -35,6 +43,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
+        activity?.onBackPressedDispatcher?.addCallback(onBackPressedCallback)
+
         val deleteAccountPreference: Preference? = findPreference("delete_account")
         deleteAccountPreference?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             val dialog = DeleteAccountDialog()
@@ -43,5 +53,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        onBackPressedCallback.remove()
     }
 }
