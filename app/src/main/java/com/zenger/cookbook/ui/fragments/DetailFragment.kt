@@ -68,7 +68,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
         enqueueWork(message)
 
-        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
+        Snackbar.make(binding.container, message, Snackbar.LENGTH_LONG)
                 .setAction(getString(R.string.undo)) {
                     WorkManager.getInstance(requireContext())
                             .cancelAllWorkByTag("UPDATE_BACKEND")

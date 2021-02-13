@@ -1,17 +1,16 @@
 package com.zenger.cookbook.ui.fragments
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import android.widget.CursorAdapter
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
-import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
 import com.zenger.cookbook.R
 import com.zenger.cookbook.adapters.LoadStateAdapter
@@ -35,9 +34,10 @@ class DiscoverFragment : Fragment(), SearchApiAdapter.OnItemClickListener {
 
     private val factory by lazy { DiscoverViewModelFactory(requireActivity().application) }
     private val viewModel: DiscoverViewModel by navGraphViewModels(R.id.app_flow_nav) { factory }
-    private lateinit var binding: FragmentDiscoverBinding
 
+    private lateinit var binding: FragmentDiscoverBinding
     private val disposables by lazy { CompositeDisposable() }
+
     private val subject = PublishSubject.create<String>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -65,29 +65,7 @@ class DiscoverFragment : Fragment(), SearchApiAdapter.OnItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val layout = binding.toolBar
-        val toolbar = layout.findViewById<MaterialToolbar>(R.id.toolBar)
-        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
-
-        setHasOptionsMenu(true)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.settings) {
-            val mainNavController by lazy { activity?.findNavController(R.id.main_nav_host_fragment) }
-            mainNavController?.navigate(R.id.action_global_settingsFragment)
-        }
-        return true
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-
-        inflater.inflate(R.menu.search_menu, menu)
-
-        val searchItem = menu.findItem(R.id.action_search)
-        val searchView = searchItem.actionView as SearchView
-
+        val searchView = binding.searchView
 
         val autoCompleteTextView = searchView.findViewById<AutoCompleteTextView>(R.id.search_src_text)
         autoCompleteTextView.setDropDownBackgroundResource(R.color.transparent)
@@ -124,7 +102,7 @@ class DiscoverFragment : Fragment(), SearchApiAdapter.OnItemClickListener {
                     }
                 } else {
                     Snackbar.make(binding.root, "Enter a search query", Snackbar.LENGTH_SHORT)
-                            .setAnchorView(binding.toolBar)
+                            .setAnchorView(binding.root)
                             .show()
                 }
 

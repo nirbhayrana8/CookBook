@@ -27,6 +27,11 @@ class AppFlowHostFragment : Fragment() {
             val navHostFragment = childFragmentManager
                     .findFragmentById(R.id.app_flow_nav_host_fragment) as NavHostFragment?
             navHostFragment?.navController?.navigateUp()
+
+            binding.bottomNav.apply {
+                selectedItemId = if (selectedItemId == R.id.discover) R.id.saved else R.id.discover
+
+            }
         }
     }
 
@@ -55,16 +60,13 @@ class AppFlowHostFragment : Fragment() {
         val host = view?.findViewById<CoordinatorLayout>(R.id.app_start_fragment)
         if (host != null) {
             navController = host.findNavController()
+            when (id) {
+
+                R.id.discover -> navController.navigate(R.id.discoverFragment)
+
+                R.id.saved -> navController.navigate(R.id.recipeFragment)
+            }
         }
-
-        when (id) {
-
-            R.id.discover -> navController.navigate(R.id.discoverFragment)
-
-            R.id.saved -> navController.navigate(R.id.recipeFragment)
-        }
-
-
     }
 
 

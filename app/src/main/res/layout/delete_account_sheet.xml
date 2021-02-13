@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:text="@string/delete_account_message" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/positive_button"
+            android:layout_width="326dp"
+            android:layout_height="60dp"
+            android:layout_below="@+id/textView"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/rounded_button_blank"
+            android:text="@string/delete_account" />
+
+        <Button
+            android:id="@+id/negative_button"
+            style="@style/ButtonStyle_blank"
+            android:layout_width="326dp"
+            android:layout_height="60dp"
+            android:layout_below="@+id/positive_button"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="25dp"
+            android:background="@drawable/rounded_button_blank"
+            android:text="@string/nevermind" />
+    </RelativeLayout>
+</layout>

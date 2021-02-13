@@ -10,5 +10,5 @@ data class User(var uid: String = "",
                 var photoUrl: String? = null,
                 var phoneNumber: String? = null,
                 var isAuthenticated: Boolean = false,
-                var isNew: Boolean = true,
+                var isNew: Boolean = false,
                 var isCreated: Boolean = false) : Parcelable

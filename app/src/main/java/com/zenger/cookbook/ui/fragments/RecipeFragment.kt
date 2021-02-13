@@ -4,13 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
-import com.google.android.material.appbar.MaterialToolbar
+import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import com.zenger.cookbook.R
 import com.zenger.cookbook.adapters.LoadStateAdapter
 import com.zenger.cookbook.adapters.SavedRecipesAdapter
@@ -27,15 +28,7 @@ class RecipeFragment : Fragment(R.layout.fragment_recipe), SavedRecipesAdapter.O
     private val viewModel: MyRecipeViewModel by navGraphViewModels(R.id.app_flow_nav) { factory }
     private lateinit var binding: FragmentRecipeBinding
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val layout = binding.toolBar
-        val toolbar = layout.findViewById<MaterialToolbar>(R.id.toolBar)
-        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_recipe, container, false)
 
         val adapter = SavedRecipesAdapter(this)
@@ -46,6 +39,24 @@ class RecipeFragment : Fragment(R.layout.fragment_recipe), SavedRecipesAdapter.O
                     header = LoadStateAdapter { adapter.retry() },
                     footer = LoadStateAdapter { adapter.retry() }
             )
+
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user != null) {
+                Glide
+                        .with(requireContext())
+                        .load(user.photoUrl.toString())
+                        .circleCrop()
+                        .dontAnimate()
+                        .error(R.drawable.ic_baseline_account_circle_24)
+                        .into(imageView)
+
+                userNameTextView.text = user.displayName
+            }
+
+            settingsOption.setOnClickListener {
+                val navController = requireActivity().findNavController(R.id.main_nav_host_fragment)
+                navController.navigate(R.id.action_global_settingsFragment)
+            }
         }
 
         lifecycleScope.launch {
@@ -78,4 +89,5 @@ class RecipeFragment : Fragment(R.layout.fragment_recipe), SavedRecipesAdapter.O
 
         findNavController().navigate(action)
     }
+
 }

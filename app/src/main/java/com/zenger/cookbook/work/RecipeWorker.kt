@@ -55,7 +55,7 @@ class RecipeWorker(private val context: Context,
         val recipe = SavedRecipeTable(itemId = recipeId, imageUrl = imageUrl, title = title)
         savedDao.insert(recipe)
 
-        val data = hashMapOf("recipes" to recipeId)
+        val data = hashMapOf("recipes" to listOf(recipeId))
 
         var result: Result? = null
 

@@ -1,19 +1,15 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/messages_header">
+    <PreferenceCategory app:title="@string/account">
 
-        <EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
-            app:useSimpleSummaryProvider="true" />
+        <Preference
+            app:key="sign_out"
+            app:title="@string/sign_out" />
 
-        <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
-            app:useSimpleSummaryProvider="true" />
+        <com.zenger.cookbook.ui.widgets.DeleteAccountPreference
+            app:key="delete_account"
+            app:summary="@string/delete_account_summary"
+            app:title="@string/delete_account" />
 
     </PreferenceCategory>
 
@@ -29,6 +25,11 @@
             app:summaryOff="@string/attachment_summary_off"
             app:summaryOn="@string/attachment_summary_on"
             app:title="@string/attachment_title" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/notifications">
+
 
     </PreferenceCategory>
 

@@ -51,4 +51,9 @@
         <item name="android:textColor">@color/active_tab_color</item>
     </style>
 
+    <style name="BottomSheetTheme" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerRadius">16dp</item>
+    </style>
+
 </resources>

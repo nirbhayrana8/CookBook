@@ -1,35 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RelativeLayout
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="8dp">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/container"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:elevation="5dp"
-            android:padding="6dp"
-            app:cardCornerRadius="5dp">
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|start"
+            android:paddingStart="4dp"
+            android:paddingEnd="2dp"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:paddingStart="4dp"
-                android:paddingEnd="2dp"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
-
-        </androidx.cardview.widget.CardView>
-
-        <View
-            style="@style/Divider"
-            android:layout_below="@+id/container" />
-    </RelativeLayout>
+    </FrameLayout>
 
 </layout>

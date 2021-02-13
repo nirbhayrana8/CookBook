@@ -10,7 +10,6 @@ import androidx.work.OneTimeWorkRequestBuilder
 import com.zenger.cookbook.R
 import com.zenger.cookbook.databinding.ActivityMainBinding
 import com.zenger.cookbook.repository.models.FireBaseAuthUserState
-import com.zenger.cookbook.ui.fragments.SplashFragmentDirections
 import com.zenger.cookbook.viewmodels.MainActivityViewModel
 import com.zenger.cookbook.viewmodels.factories.MainActivityViewModelFactory
 import com.zenger.cookbook.work.DataBaseCleanupWorker
@@ -41,7 +40,7 @@ class MainActivity : AppCompatActivity() {
             is FireBaseAuthUserState.UserSignedOut -> {
                 Timber.d("User NOT Signed IN")
                 val navHostFragment = supportFragmentManager.findFragmentById(R.id.main_nav_host_fragment) as NavHostFragment?
-                navHostFragment?.navController?.navigate(SplashFragmentDirections.actionSplashFragmentToLoginFlowNav())
+                navHostFragment?.navController?.navigate(R.id.action_global_login_flow_nav)
             }
         }
     }

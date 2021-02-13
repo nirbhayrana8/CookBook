@@ -33,8 +33,6 @@ class AuthRepository(application: Application) {
     private val database = Firebase.firestore
     private val deviceDatabase by lazy { RecipeDatabase.getInstance(application) as RecipeDatabase }
 
-    private val user by lazy { User() }
-
     fun getAuthStateLiveData(auth: FirebaseAuth, context: CoroutineContext): LiveData<FireBaseAuthUserState> {
         return auth.newFireBaseAuthStateLiveData(context)
     }
@@ -71,7 +69,6 @@ class AuthRepository(application: Application) {
         return authenticatedUserMutableLiveData
     }
 
-
     fun createUserInFireStoreIfNotExists(authenticatedUser: User): LiveData<User> {
         val newUserMutableLiveData = MutableLiveData<User>()
 
@@ -91,6 +88,7 @@ class AuthRepository(application: Application) {
                         .addOnSuccessListener {
                             authenticatedUser.isCreated = true
                             newUserMutableLiveData.value = authenticatedUser
+                            Timber.d("Created new user in firestore \n user: $user")
                         }
                         .addOnFailureListener { exception ->
                             Timber.e(exception, "Failed To Create user")
@@ -104,23 +102,6 @@ class AuthRepository(application: Application) {
                 }
 
         return newUserMutableLiveData
-    }
-
-    fun checkIfUserIsAuthenticatedInFirebase(): MutableLiveData<User> {
-        val isUserAuthenticatedInFirebase = MutableLiveData<User>()
-        val firebaseUser = firebaseAuth.currentUser
-
-        if (firebaseUser == null) {
-            Timber.d("firebase user null")
-            user.isAuthenticated = false
-            isUserAuthenticatedInFirebase.value = user
-        } else {
-            Timber.d("firebase user not null uid: ${firebaseUser.uid}")
-            user.uid = firebaseUser.uid
-            user.isAuthenticated = true
-            isUserAuthenticatedInFirebase.value = user
-        }
-        return isUserAuthenticatedInFirebase
     }
 
     fun searchUserInBackend(uid: String): MutableLiveData<User> {
@@ -138,11 +119,12 @@ class AuthRepository(application: Application) {
                     }
                 }
                 .addOnFailureListener {
-                    Timber.d("failure in background search")
+                    Timber.d("Failure in background search")
                 }
         return userLiveData
     }
 
+    @Suppress("UNCHECKED_CAST")
     suspend fun getUserData() {
         val user = firebaseAuth.currentUser
         if (user != null) {
