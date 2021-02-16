@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "897782935893-2uvto2g0i5jfd007d4afe27efogucfkg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zenger.cookbook",
+            "certificate_hash": "56dd623d54ab380c3e16cf783b33afa80178b319"
+          }
+        },
+        {
           "client_id": "897782935893-11ini8bjmnb3fqml333j443mtc1ur6ta.apps.googleusercontent.com",
           "client_type": 3
         }

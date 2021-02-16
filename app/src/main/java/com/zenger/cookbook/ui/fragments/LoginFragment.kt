@@ -147,9 +147,8 @@ class LoginFragment : Fragment() {
                 Timber.d("New User")
                 loginViewModel.createNewUser(user)
                 loginViewModel.createdUserLiveData.observe(viewLifecycleOwner) {
-
                     if (it.isCreated) {
-                        val view = requireActivity().findViewById<View>(R.id.container)
+                        val view = requireActivity().findViewById<View>(R.id.coordinator_layout)
                         val snackBar = Snackbar.make(view, "User Created", Snackbar.LENGTH_LONG)
                         snackBar.show()
                     }

@@ -46,7 +46,7 @@ class LoginViewModel(application: Application) : ViewModel() {
 
 
     fun createNewUser(authenticatedUser: User) {
-        createdUserLiveData = authRepository.createUserInFireStoreIfNotExists(authenticatedUser)
+        createdUserLiveData = authRepository.createUserInFireStore(authenticatedUser)
     }
 
     fun saveUserDataOnDevice() {

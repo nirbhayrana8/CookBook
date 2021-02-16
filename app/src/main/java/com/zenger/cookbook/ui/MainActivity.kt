@@ -111,8 +111,6 @@ class MainActivity : AppCompatActivity() {
         message?.run {
             initialRun = false
             Snackbar.make(root, message, Snackbar.LENGTH_LONG)
-                    .setTextColor(getColor(R.color.black))
-                    .setBackgroundTint(getColor(R.color.snackbar_background))
                     .show()
         }
     }

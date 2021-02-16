@@ -11,5 +11,4 @@
     <color name="active_tab_color">#DBF9F0</color>
     <color name="inactive_active_tab_color">#210124</color>
     <color name="transparent">#00000000</color>
-    <color name="snackbar_background">#D9D3DA</color>
 </resources>

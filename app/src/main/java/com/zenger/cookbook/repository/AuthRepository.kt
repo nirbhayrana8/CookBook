@@ -69,7 +69,7 @@ class AuthRepository(application: Application) {
         return authenticatedUserMutableLiveData
     }
 
-    fun createUserInFireStoreIfNotExists(authenticatedUser: User): LiveData<User> {
+    fun createUserInFireStore(authenticatedUser: User): LiveData<User> {
         val newUserMutableLiveData = MutableLiveData<User>()
 
         val user = hashMapOf(
@@ -80,23 +80,12 @@ class AuthRepository(application: Application) {
         )
 
         val uidRef = database.collection("users").document(authenticatedUser.uid)
-
-        uidRef.get().addOnSuccessListener {
-
-            if (!it.exists()) {
-                uidRef.set(user)
-                        .addOnSuccessListener {
-                            authenticatedUser.isCreated = true
-                            newUserMutableLiveData.value = authenticatedUser
-                            Timber.d("Created new user in firestore \n user: $user")
-                        }
-                        .addOnFailureListener { exception ->
-                            Timber.e(exception, "Failed To Create user")
-                        }
-            } else {
-                newUserMutableLiveData.value = authenticatedUser
-            }
-        }
+        uidRef.set(user)
+                .addOnSuccessListener {
+                    authenticatedUser.isCreated = true
+                    newUserMutableLiveData.value = authenticatedUser
+                    Timber.d("Created new user in firestore \n user: $user")
+                }
                 .addOnFailureListener { exception ->
                     Timber.e(exception, "Failed To Create user")
                 }
