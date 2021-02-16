@@ -78,5 +78,6 @@
     <string name="enter_valid_email">Enter valid email address</string>
     <string name="enter_valid_name">Enter valid name</string>
     <string name="enter_the_otp_sent">Enter the OTP sent to to your device</string>
+    <string name="edit_account">Edit account information</string>
 
 </resources>

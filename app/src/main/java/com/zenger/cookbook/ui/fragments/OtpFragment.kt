@@ -10,6 +10,7 @@ import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.PhoneAuthProvider
@@ -82,20 +83,16 @@ class OtpFragment : Fragment() {
                         if (it.isCreated) {
                             Snackbar.make(binding.container, "User Created", Snackbar.LENGTH_LONG).show()
                         }
-                        goToEmailFragment()
+                        findNavController().navigate(OtpFragmentDirections.actionOtpFragmentToEmailFragment())
                     })
                 } else {
                     Timber.d("Old User")
                     viewModel.saveUserDataOnDevice()
-                    goToEmailFragment()
+                    requireActivity().findNavController(R.id.main_nav_host_fragment).navigate(R.id.appFlowHostFragment)
                 }
             })
 
         }
-    }
-
-    private fun goToEmailFragment() {
-        findNavController().navigate(OtpFragmentDirections.actionOtpFragmentToEmailFragment())
     }
 
     private fun verifyOtp() {
