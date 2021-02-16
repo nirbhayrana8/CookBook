@@ -9,7 +9,7 @@ import com.zenger.cookbook.repository.AuthRepository
 import com.zenger.cookbook.repository.models.FireBaseAuthUserState
 import com.zenger.cookbook.repository.models.User
 
-class MainActivityViewModel(application: Application) : ViewModel() {
+class MainActivityViewModel(private val application: Application) : ViewModel() {
 
     private val repository by lazy { AuthRepository(application) }
 
@@ -24,4 +24,5 @@ class MainActivityViewModel(application: Application) : ViewModel() {
     fun searchUserInBackend(uid: String) {
         userLiveData = repository.searchUserInBackend(uid)
     }
+
 }

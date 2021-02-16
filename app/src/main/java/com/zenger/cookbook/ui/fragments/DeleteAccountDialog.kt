@@ -15,7 +15,6 @@ import com.zenger.cookbook.databinding.DeleteAccountSheetBinding
 import com.zenger.cookbook.room.RecipeDatabase
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
 class DeleteAccountDialog : BottomSheetDialogFragment() {
@@ -46,15 +45,22 @@ class DeleteAccountDialog : BottomSheetDialogFragment() {
 
         val firestore = Firebase.firestore
         val user = FirebaseAuth.getInstance().currentUser
-        val userDocRef = firestore.collection("users").document(user?.uid.toString())
+        if (user != null) {
+            val userDocRef = firestore.collection("users").document(user.uid)
 
-        val task1 = userDocRef.collection("user_data").document("saved_recipes")
-                .get().await()
-        if (task1.exists()) {
             userDocRef.collection("user_data").document("saved_recipes")
-                    .delete()
-                    .addOnSuccessListener { Timber.d("Successfully deleted saved recipes") }
-                    .addOnFailureListener { Timber.e(it, "Failed to delete data") }
+                    .get().addOnSuccessListener {
+
+                        userDocRef.collection("user_data").document("saved_recipes")
+                                .delete()
+                                .addOnSuccessListener {
+                                    Timber.d("Successfully deleted saved recipes")
+                                    userDocRef.delete()
+                                            .addOnSuccessListener { Timber.d("Successfully deleted user data") }
+                                }
+                                .addOnFailureListener { Timber.e(it, "Failed to delete data") }
+                    }
+
         }
 
 

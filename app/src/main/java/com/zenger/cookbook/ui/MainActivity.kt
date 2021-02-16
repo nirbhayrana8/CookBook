@@ -1,5 +1,8 @@
 package com.zenger.cookbook.ui
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -7,9 +10,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import androidx.work.OneTimeWorkRequestBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.zenger.cookbook.R
 import com.zenger.cookbook.databinding.ActivityMainBinding
 import com.zenger.cookbook.repository.models.FireBaseAuthUserState
+import com.zenger.cookbook.repository.models.NetworkState
 import com.zenger.cookbook.viewmodels.MainActivityViewModel
 import com.zenger.cookbook.viewmodels.factories.MainActivityViewModelFactory
 import com.zenger.cookbook.work.DataBaseCleanupWorker
@@ -22,10 +27,11 @@ class MainActivity : AppCompatActivity() {
     private val factory by lazy { MainActivityViewModelFactory(application) }
     private val viewModel: MainActivityViewModel by viewModels { factory }
 
+    private var initialRun = true
+
     private val userStateObserver = Observer<FireBaseAuthUserState> { userState ->
         when (userState) {
             is FireBaseAuthUserState.UserUnknown -> {
-
             }
 
             is FireBaseAuthUserState.UserSignedIn -> {
@@ -45,21 +51,47 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            super.onAvailable(network)
+            generateSnackBar(NetworkState.CONNECTED)
+        }
+
+        override fun onLost(network: Network) {
+            super.onLost(network)
+            generateSnackBar(NetworkState.NO_CONNECTION)
+        }
+
+        override fun onUnavailable() {
+            super.onUnavailable()
+            generateSnackBar(NetworkState.UNAVAILABLE)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-
     }
 
     override fun onStart() {
         super.onStart()
         viewModel.authStateLiveData.observeForever(userStateObserver)
+
+        val connectivityManager = applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+        connectivityManager?.let {
+            connectivityManager.registerDefaultNetworkCallback(networkCallback)
+        }
     }
 
     override fun onStop() {
         super.onStop()
         viewModel.authStateLiveData.removeObserver(userStateObserver)
+
+        val connectivityManager = applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+        connectivityManager?.let {
+            connectivityManager.unregisterNetworkCallback(networkCallback)
+        }
     }
 
     private fun generateWorkRequest() =
@@ -67,4 +99,21 @@ class MainActivity : AppCompatActivity() {
                     .setInitialDelay(80, TimeUnit.SECONDS)
                     .addTag("DATABASE_CLEANUP")
                     .build()
+
+    private fun generateSnackBar(state: NetworkState) {
+        val root = binding.coordinatorLayout
+
+        val message: String? = when (state) {
+            NetworkState.NO_CONNECTION -> "No internet connection found. Please check device connection"
+            NetworkState.UNAVAILABLE -> "Internet connection is unavailable."
+            NetworkState.CONNECTED -> if (initialRun) null else "Connected to the internet"
+        }
+        message?.run {
+            initialRun = false
+            Snackbar.make(root, message, Snackbar.LENGTH_LONG)
+                    .setTextColor(getColor(R.color.black))
+                    .setBackgroundTint(getColor(R.color.snackbar_background))
+                    .show()
+        }
+    }
 }
