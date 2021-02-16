@@ -162,7 +162,7 @@ class AuthRepository(application: Application) {
     fun verifyInput(textInputEditText: TextInputEditText): Observable<String> =
 
             textInputEditText.inputStream()
-                    .debounce(750, TimeUnit.MILLISECONDS)
+                    .debounce(650, TimeUnit.MILLISECONDS)
                     .filter { it.isNotEmpty() }
                     .distinctUntilChanged()
                     .subscribeOn(Schedulers.io())
@@ -171,7 +171,8 @@ class AuthRepository(application: Application) {
 
     private fun TextInputEditText.inputStream(): Observable<String> =
             Observable.create {
-                addTextChangedListener(object : TextWatcher {
+
+            addTextChangedListener(object : TextWatcher {
 
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 

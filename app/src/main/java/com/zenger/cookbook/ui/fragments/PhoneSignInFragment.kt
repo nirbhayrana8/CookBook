@@ -110,6 +110,7 @@ class PhoneSignInFragment : Fragment() {
             binding.loading.visibility = View.VISIBLE
             binding.loginPhone.isEnabled = false
             binding.phoneEditText.isEnabled = false
+            binding.countryCodeLayout.isEnabled = false
 
         } else {
             binding.phoneEditText.error = getString(R.string.invalid_phone_number)

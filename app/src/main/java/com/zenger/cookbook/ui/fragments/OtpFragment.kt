@@ -10,7 +10,6 @@ import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.PhoneAuthProvider
@@ -37,8 +36,6 @@ class OtpFragment : Fragment() {
     private val repo by lazy { AuthRepository(requireActivity().application) }
     private val disposables = CompositeDisposable()
 
-    private val mainNavController by lazy { activity?.findNavController(R.id.main_nav_host_fragment) }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -57,9 +54,7 @@ class OtpFragment : Fragment() {
             findNavController().navigate(R.id.phoneSignInFragment)
         }
 
-        binding.loginPhone.setOnClickListener {
-            verifyPhoneWithCode()
-        }
+        binding.loginPhone.setOnClickListener { verifyPhoneWithCode() }
 
         return binding.root
     }
@@ -87,20 +82,20 @@ class OtpFragment : Fragment() {
                         if (it.isCreated) {
                             Snackbar.make(binding.container, "User Created", Snackbar.LENGTH_LONG).show()
                         }
-                        goToMainAppFlow()
+                        goToEmailFragment()
                     })
                 } else {
                     Timber.d("Old User")
                     viewModel.saveUserDataOnDevice()
-                    goToMainAppFlow()
+                    goToEmailFragment()
                 }
             })
 
         }
     }
 
-    private fun goToMainAppFlow() {
-        mainNavController?.navigate(R.id.appFlowHostFragment)
+    private fun goToEmailFragment() {
+        findNavController().navigate(OtpFragmentDirections.actionOtpFragmentToEmailFragment())
     }
 
     private fun verifyOtp() {
@@ -116,7 +111,7 @@ class OtpFragment : Fragment() {
             override fun onNext(t: String?) {
                 val input = t ?: return
                 if (!(input matches regex)) {
-                    binding.phoneEditText.error = getString(R.string.invalid_phone_number)
+                    binding.phoneEditText.error = "Enter valid OTP"
                 } else {
                     binding.phoneEditText.error = null
                     validOtp = true
@@ -130,9 +125,8 @@ class OtpFragment : Fragment() {
 
     }
 
-
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onPause() {
+        super.onPause()
         disposables.dispose()
     }
 

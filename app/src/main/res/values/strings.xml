@@ -71,5 +71,12 @@
     <string name="nevermind">Nevermind</string>
     <string name="reauthenticate_message">It seems your credentials have expired. You must login again to perform this action.</string>
     <string name="settings_option">Settings Option</string>
+    <string name="enter_email_address_message">Enter an email address for account recovery</string>
+    <string name="enter_email_address">Enter email address</string>
+    <string name="enter_name">Enter your name</string>
+    <string name="name">Name</string>
+    <string name="enter_valid_email">Enter valid email address</string>
+    <string name="enter_valid_name">Enter valid name</string>
+    <string name="enter_the_otp_sent">Enter the OTP sent to to your device</string>
 
 </resources>

@@ -37,10 +37,6 @@ class MainActivity : AppCompatActivity() {
             is FireBaseAuthUserState.UserSignedIn -> {
                 Timber.d("User Signed IN \n UID: ${userState.user.uid}")
                 viewModel.searchUserInBackend(userState.user.uid)
-                viewModel.userLiveData.observe(this) {
-                    val navHostFragment = supportFragmentManager.findFragmentById(R.id.main_nav_host_fragment) as NavHostFragment?
-                    navHostFragment?.navController?.navigate(R.id.appFlowHostFragment)
-                }
             }
 
             is FireBaseAuthUserState.UserSignedOut -> {
