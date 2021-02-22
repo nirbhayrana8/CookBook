@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -15,11 +16,16 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.zenger.cookbook.R
 import com.zenger.cookbook.databinding.FragmentNameBinding
+import com.zenger.cookbook.viewmodels.MainActivityViewModel
+import com.zenger.cookbook.viewmodels.factories.MainActivityViewModelFactory
 import timber.log.Timber
 
 class NameFragment : Fragment(R.layout.fragment_name) {
 
     private lateinit var binding: FragmentNameBinding
+
+    private val factory by lazy { MainActivityViewModelFactory(requireActivity().application) }
+    private val mainViewModel by activityViewModels<MainActivityViewModel> { factory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_name, container, false)
@@ -58,7 +64,7 @@ class NameFragment : Fragment(R.layout.fragment_name) {
                             }
                         }
 
-
+                mainViewModel.setSignInStatus(true)
             }
         } else {
             binding.editText.error = getString(R.string.enter_valid_name)

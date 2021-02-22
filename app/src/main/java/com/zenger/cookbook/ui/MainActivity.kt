@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.work.OneTimeWorkRequestBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -29,6 +30,10 @@ class MainActivity : AppCompatActivity() {
 
     private var initialRun = true
 
+    companion object {
+        var signInComplete = true
+    }
+
     private val userStateObserver = Observer<FireBaseAuthUserState> { userState ->
         when (userState) {
             is FireBaseAuthUserState.UserUnknown -> {
@@ -36,7 +41,22 @@ class MainActivity : AppCompatActivity() {
 
             is FireBaseAuthUserState.UserSignedIn -> {
                 Timber.d("User Signed IN \n UID: ${userState.user.uid}")
-                viewModel.searchUserInBackend(userState.user.uid)
+
+                viewModel.setSignInStatus(signInComplete)
+
+                viewModel.signInComplete.observe(this) { complete ->
+                    Timber.d("Sign in status value: $complete")
+                    if (complete) {
+                        viewModel.searchUserInBackend(userState.user.uid)
+                        viewModel.userLiveData.observe(this) {
+                            if (it != null) {
+                                findNavController(R.id.main_nav_host_fragment).navigate(R.id.appFlowHostFragment)
+                            } else
+                                Timber.d("User Null")
+                        }
+                    }
+                }
+
             }
 
             is FireBaseAuthUserState.UserSignedOut -> {

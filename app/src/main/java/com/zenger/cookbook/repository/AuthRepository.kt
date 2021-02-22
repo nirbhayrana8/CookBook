@@ -93,7 +93,8 @@ class AuthRepository(application: Application) {
         return newUserMutableLiveData
     }
 
-    fun searchUserInBackend(uid: String): MutableLiveData<User> {
+    fun searchUserInBackend(uid: String): User? {
+        Timber.d("supplied uid: $uid \n actual uid: ${firebaseAuth.currentUser?.uid}")
         val userLiveData = MutableLiveData<User>()
         val uidRef = database.collection("users").document(uid)
 
@@ -103,15 +104,18 @@ class AuthRepository(application: Application) {
                         val user = it.toObject<User>()
                         userLiveData.value = user
                     } else {
-                        Timber.d("User Not found")
+                        Timber.e("User Not found")
                         throw IllegalAccessException("User not found in backend")
                     }
                 }
                 .addOnFailureListener {
                     Timber.d("Failure in background search")
                 }
-        return userLiveData
+        return userLiveData.value
     }
+
+    fun setSignInProcessComplete(complete: Boolean) = complete
+
 
     @Suppress("UNCHECKED_CAST")
     suspend fun getUserData() {

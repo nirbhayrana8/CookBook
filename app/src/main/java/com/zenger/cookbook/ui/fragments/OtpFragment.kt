@@ -17,6 +17,7 @@ import com.google.firebase.auth.PhoneAuthProvider
 import com.zenger.cookbook.R
 import com.zenger.cookbook.databinding.FragmentOtpBinding
 import com.zenger.cookbook.repository.AuthRepository
+import com.zenger.cookbook.ui.MainActivity
 import com.zenger.cookbook.viewmodels.LoginViewModel
 import com.zenger.cookbook.viewmodels.factories.LoginViewModelFactory
 import io.reactivex.rxjava3.core.Observer
@@ -71,6 +72,7 @@ class OtpFragment : Fragment() {
             binding.phoneEditText.isEnabled = false
 
             val credential = PhoneAuthProvider.getCredential(verificationCode, binding.phoneEditText.text.toString())
+            MainActivity.signInComplete = false
             viewModel.firebaseAuthWithCredentials(credential)
 
             viewModel.authenticatedUserData.observe(viewLifecycleOwner, { user ->

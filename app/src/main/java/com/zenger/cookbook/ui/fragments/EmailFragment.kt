@@ -1,6 +1,8 @@
 package com.zenger.cookbook.ui.fragments
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -41,13 +43,16 @@ class EmailFragment : Fragment(R.layout.fragment_email) {
         if (validEmail) {
             val inputMgr = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMgr.hideSoftInputFromWindow(binding.editText.windowToken, 0)
-            binding.editText.isEnabled = false
-            binding.button.isEnabled = false
-            binding.loading.visibility = View.VISIBLE
+            binding.apply {
+                editText.isEnabled = false
+                button.isEnabled = false
+                loading.visibility = View.VISIBLE
+            }
 
             val user = FirebaseAuth.getInstance().currentUser
             val fireStore = Firebase.firestore
             user?.run {
+                Timber.d("User is updating")
                 updateEmail(binding.editText.text.toString())
                         .addOnCompleteListener {
                             if (it.isSuccessful) {
@@ -58,9 +63,28 @@ class EmailFragment : Fragment(R.layout.fragment_email) {
                                             if (task.isSuccessful)
                                                 findNavController().navigate(EmailFragmentDirections.actionEmailFragmentToNameFragment())
                                         }
+                            } else {
+                                if (it.exception?.message == "The email address is already in use by another account.") {
+                                    binding.apply {
+                                        editText.isEnabled = true
+                                        button.isEnabled = true
+                                        loading.visibility = View.GONE
+                                    }
+                                    AlertDialog.Builder(requireContext())
+                                            .setMessage("This email address is already in use by another account. Please enter another email address.")
+                                            .setPositiveButton("Ok") { dialog: DialogInterface, _: Int ->
+                                                dialog.dismiss()
+                                            }.show()
+                                } else {
+                                    it.exception?.run {
+                                        Timber.e("well here it is: ${this.message}")
+                                        throw this
+                                    }
+
+                                }
+
                             }
                         }
-
 
             }
         } else {
