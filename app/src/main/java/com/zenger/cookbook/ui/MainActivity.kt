@@ -34,53 +34,57 @@ class MainActivity : AppCompatActivity() {
         var signInComplete = true
     }
 
-    private val userStateObserver = Observer<FireBaseAuthUserState> { userState ->
-        when (userState) {
-            is FireBaseAuthUserState.UserUnknown -> {
-            }
-
-            is FireBaseAuthUserState.UserSignedIn -> {
-                Timber.d("User Signed IN \n UID: ${userState.user.uid}")
-
-                viewModel.setSignInStatus(signInComplete)
-
-                viewModel.signInComplete.observe(this) { complete ->
-                    Timber.d("Sign in status value: $complete")
-                    if (complete) {
-                        viewModel.searchUserInBackend(userState.user.uid)
-                        viewModel.userLiveData.observe(this) {
-                            if (it != null) {
-                                findNavController(R.id.main_nav_host_fragment).navigate(R.id.appFlowHostFragment)
-                            } else
-                                Timber.d("User Null")
-                        }
-                    }
+    private val userStateObserver by lazy {
+        Observer<FireBaseAuthUserState> { userState ->
+            when (userState) {
+                is FireBaseAuthUserState.UserUnknown -> {
                 }
 
-            }
+                is FireBaseAuthUserState.UserSignedIn -> {
+                    Timber.d("User Signed IN \n UID: ${userState.user.uid}")
 
-            is FireBaseAuthUserState.UserSignedOut -> {
-                Timber.d("User NOT Signed IN")
-                val navHostFragment = supportFragmentManager.findFragmentById(R.id.main_nav_host_fragment) as NavHostFragment?
-                navHostFragment?.navController?.navigate(R.id.action_global_login_flow_nav)
+                    viewModel.setSignInStatus(signInComplete)
+
+                    viewModel.signInComplete.observe(this) { complete ->
+                        Timber.d("Sign in status value: $complete")
+                        if (complete) {
+                            viewModel.searchUserInBackend(userState.user.uid)
+                            viewModel.userLiveData.observe(this) {
+                                if (it != null) {
+                                    findNavController(R.id.main_nav_host_fragment).navigate(R.id.appFlowHostFragment)
+                                } else
+                                    Timber.d("User Null")
+                            }
+                        }
+                    }
+
+                }
+
+                is FireBaseAuthUserState.UserSignedOut -> {
+                    Timber.d("User NOT Signed IN")
+                    val navHostFragment = supportFragmentManager.findFragmentById(R.id.main_nav_host_fragment) as NavHostFragment?
+                    navHostFragment?.navController?.navigate(R.id.action_global_login_flow_nav)
+                }
             }
         }
     }
 
-    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
-        override fun onAvailable(network: Network) {
-            super.onAvailable(network)
-            generateSnackBar(NetworkState.CONNECTED)
-        }
+    private val networkCallback by lazy {
+        object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                super.onAvailable(network)
+                generateSnackBar(NetworkState.CONNECTED)
+            }
 
-        override fun onLost(network: Network) {
-            super.onLost(network)
-            generateSnackBar(NetworkState.NO_CONNECTION)
-        }
+            override fun onLost(network: Network) {
+                super.onLost(network)
+                generateSnackBar(NetworkState.NO_CONNECTION)
+            }
 
-        override fun onUnavailable() {
-            super.onUnavailable()
-            generateSnackBar(NetworkState.UNAVAILABLE)
+            override fun onUnavailable() {
+                super.onUnavailable()
+                generateSnackBar(NetworkState.UNAVAILABLE)
+            }
         }
     }
 

@@ -9,6 +9,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.zenger.cookbook.repository.AuthRepository
 import com.zenger.cookbook.repository.models.FireBaseAuthUserState
 import com.zenger.cookbook.repository.models.User
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class MainActivityViewModel(private val application: Application) : ViewModel() {
@@ -33,7 +37,14 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
     }
 
     fun searchUserInBackend(uid: String) {
-        _userLiveData.value = repository.searchUserInBackend(uid)
+        viewModelScope.launch(IO) {
+            val user = repository.searchUserInBackend(uid)
+            Timber.d("Heres the user ${user.toString()}")
+            withContext(Main) {
+                _userLiveData.value = user
+            }
+        }
+
     }
 
 }

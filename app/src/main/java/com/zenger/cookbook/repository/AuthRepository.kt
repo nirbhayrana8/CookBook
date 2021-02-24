@@ -22,7 +22,9 @@ import com.zenger.cookbook.room.tables.SavedRecipeTable
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
@@ -93,28 +95,34 @@ class AuthRepository(application: Application) {
         return newUserMutableLiveData
     }
 
-    fun searchUserInBackend(uid: String): User? {
+    suspend fun searchUserInBackend(uid: String): User? {
         Timber.d("supplied uid: $uid \n actual uid: ${firebaseAuth.currentUser?.uid}")
         val userLiveData = MutableLiveData<User>()
         val uidRef = database.collection("users").document(uid)
 
-        uidRef.get()
-                .addOnSuccessListener {
-                    if (it.exists()) {
-                        val user = it.toObject<User>()
-                        userLiveData.value = user
-                    } else {
-                        Timber.e("User Not found")
-                        throw IllegalAccessException("User not found in backend")
+        try {
+            val documentSnapshot = uidRef.get().await()
+            Timber.d("We are running")
+            if (documentSnapshot != null) {
+                if (documentSnapshot.exists()) {
+                    Timber.d("Snapshot: $documentSnapshot")
+                    val user = documentSnapshot.toObject<User>()
+                    Timber.d("User exists: $user")
+                    withContext(Main) {
+                        user?.let { userLiveData.value = it }
                     }
+
+                } else {
+                    Timber.e("User Not found")
+                    throw IllegalAccessException("User not found in backend")
                 }
-                .addOnFailureListener {
-                    Timber.d("Failure in background search")
-                }
+            }
+        } catch (e: Exception) {
+            Timber.e(e.message, "Here It is")
+            throw e
+        }
         return userLiveData.value
     }
-
-    fun setSignInProcessComplete(complete: Boolean) = complete
 
 
     @Suppress("UNCHECKED_CAST")
@@ -176,7 +184,7 @@ class AuthRepository(application: Application) {
     private fun TextInputEditText.inputStream(): Observable<String> =
             Observable.create {
 
-            addTextChangedListener(object : TextWatcher {
+                addTextChangedListener(object : TextWatcher {
 
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 

@@ -17,7 +17,9 @@
         tools:layout="@layout/fragment_splash">
         <action
             android:id="@+id/action_splashFragment_to_login_flow_nav"
-            app:destination="@id/login_flow_nav" />
+            app:destination="@id/login_flow_nav"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <include app:graph="@navigation/login_flow_nav" />
     <fragment

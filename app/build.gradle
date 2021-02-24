@@ -69,9 +69,9 @@ dependencies {
     implementation "com.jakewharton.timber:timber:4.7.1"
 
     //Room dependency
-    implementation "androidx.room:room-runtime:2.3.0-beta01"
-    kapt "androidx.room:room-compiler:2.3.0-beta01"
-    implementation "androidx.room:room-ktx:2.3.0-beta01"
+    implementation "androidx.room:room-runtime:2.3.0-beta02"
+    kapt "androidx.room:room-compiler:2.3.0-beta02"
+    implementation "androidx.room:room-ktx:2.3.0-beta02"
 
     //Gson
     implementation "com.google.code.gson:gson:2.8.6"
@@ -94,9 +94,9 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     // ViewModel
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0"
     // LiveData
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0"
 
     //FireBase BoM
     implementation platform('com.google.firebase:firebase-bom:26.4.0')

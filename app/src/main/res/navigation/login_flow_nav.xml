@@ -35,7 +35,9 @@
             android:id="@+id/action_otpFragment_to_emailFragment"
             app:destination="@id/emailFragment"
             app:enterAnim="@anim/enter_from_right"
-            app:exitAnim="@anim/exit_to_left" />
+            app:exitAnim="@anim/exit_to_left"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/emailFragment"
@@ -46,7 +48,9 @@
             android:id="@+id/action_emailFragment_to_nameFragment"
             app:destination="@id/nameFragment"
             app:enterAnim="@anim/enter_from_right"
-            app:exitAnim="@anim/exit_to_left" />
+            app:exitAnim="@anim/exit_to_left"
+            app:popUpTo="@id/emailFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/nameFragment"
