@@ -36,7 +36,7 @@
             app:destination="@id/emailFragment"
             app:enterAnim="@anim/enter_from_right"
             app:exitAnim="@anim/exit_to_left"
-            app:popUpTo="@id/loginFragment"
+            app:popUpTo="@id/login_flow_nav"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment

@@ -5,19 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.zenger.cookbook.R
 import com.zenger.cookbook.databinding.FragmentAppFlowHostBinding
-import timber.log.Timber
 
 
 class AppFlowHostFragment : Fragment() {
-    private lateinit var navController: NavController
+
+    private val navHostFragment by lazy {
+        childFragmentManager
+                .findFragmentById(R.id.app_flow_nav_host_fragment) as NavHostFragment?
+    }
+    private val navController: NavController? by lazy { navHostFragment?.navController }
 
     private lateinit var binding: FragmentAppFlowHostBinding
 
@@ -25,14 +27,11 @@ class AppFlowHostFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         activity?.onBackPressedDispatcher?.addCallback {
-            val navHostFragment = childFragmentManager
-                    .findFragmentById(R.id.app_flow_nav_host_fragment) as NavHostFragment?
-            navHostFragment?.navController?.navigateUp()
+            navController?.navigateUp()
 
-            val backStackId = navHostFragment?.navController?.currentBackStackEntry?.destination?.id
+            val backStackId = navController?.currentBackStackEntry?.destination?.id
             binding.bottomNav.apply {
                 selectedItemId = if (backStackId == R.id.discoverFragment) R.id.discover else R.id.saved
-                Timber.d("current selectedItemId: $selectedItemId")
 
             }
         }
@@ -60,16 +59,15 @@ class AppFlowHostFragment : Fragment() {
 
     private fun navigate(id: Int) {
 
-        val host = view?.findViewById<CoordinatorLayout>(R.id.app_start_fragment)
-        if (host != null) {
-            navController = host.findNavController()
+        navController?.run {
             when (id) {
 
-                R.id.discover -> navController.navigate(R.id.discoverFragment)
+                R.id.discover -> this.navigate(R.id.discoverFragment)
 
-                R.id.saved -> navController.navigate(R.id.recipeFragment)
+                R.id.saved -> this.navigate(R.id.recipeFragment)
             }
         }
+
     }
 
 
